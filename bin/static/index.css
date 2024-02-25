@@ -1,0 +1,258 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+::-webkit-scrollbar {
+  width: 0;
+}
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+body {
+  overflow: hidden;
+  width: 1000px;
+  background-color: #000;
+  color:#fff;
+  height: 615px;
+}
+main {
+  display: grid;
+  grid-template-columns: 230px auto;
+  padding: 20px;
+}
+.items {
+  display: grid;
+  grid-gap: 25px;
+  grid-template-columns: repeat(5, 120px);
+  grid-template-rows: 120px;
+  
+  height: 500px;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding: 10px;
+  overflow-y: auto;
+}
+.item {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  color:#fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.item .filename {
+  word-break: break-all;
+  padding: 5px;
+  overflow: hidden;
+  height: 68px;
+}
+.item .btn_download {
+  background-color: #333;
+  width: 100%;
+  height: 25px;
+  text-align: center;
+  color: #fff;
+  transition: transform 200ms ease-out;
+  border-radius: 25px;
+}
+.item .btn_download:hover {
+  transform: scale(1.03);
+  background-color: #6634db;
+}
+.item .file_size {
+  font-size: 10px;
+}
+footer {
+  width: 960px;
+  background-color: #111;
+  color: #f5f5f5;
+  padding: 12px 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.folds {
+  padding: 10px;
+}
+.fold {
+  background-color: #444;
+  border-radius: 8px;
+  width: 180px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  transition: transform 300ms ease-out;
+  
+  height: 28px;
+  line-height: 28px;
+}
+.fold:hover {
+  background-color: #6634db;
+  transform: scale(1.02);
+  cursor: pointer;
+}
+footer div {
+  height: 32px;
+  line-height: 32px;
+}
+div svg {
+  width: 32px;
+  height: 32px;
+  transition: transform 300ms ease-out;
+}
+div svg:hover {
+  width: 32px;
+  height: 32px;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+.line_block {
+  display: flex;
+  height: 32px;
+}
+.line_block div svg {
+  margin-left: 12px;
+}
+.empt_files {
+  position: absolute;
+  width: 730px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 225px;
+}
+.empt_files p {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bolder;
+}
+.settings {
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background-color: #000;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 500px;
+  padding: 20px;
+}
+.settings_sub a {
+  cursor: pointer;
+}
+.container{
+  width: 80%;
+}
+.container form .form-row{
+  display: flex;
+}
+form .form-row .input-data{
+  width: 100%;
+  height: 40px;
+  margin: 0 20px;
+  position: relative;
+}
+.input-data input{
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  font-size: 18px;
+  background-color: transparent;
+  border-bottom: 2px solid #fff;
+  color:#f5f5f5;
+}
+.input-data input:focus ~ label, .textarea textarea:focus ~ label,
+.input-data input:valid ~ label, .textarea textarea:valid ~ label{
+  transform: translateY(-25px);
+  font-size: 16px;
+  color: #6634db;
+}
+.input-data label{
+  position: absolute;
+  pointer-events: none;
+  bottom: 10px;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  color: #f5f5f5;
+}
+.settings_sub a {
+  margin: 10px;
+}
+.url-underline:after {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  background-color: #c4b5a7;
+  transition: width 0.5s;
+}
+.url-underline {
+  color: #ffffff;
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+}
+.url-underline:hover:after {
+  content: "";
+  width: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 2px;
+  background-color: #6634db;
+  transition: width 0.5s;
+}
+.progress-container {
+  height: 6px;
+  width: 100%;
+  border-radius: 0.4rem;
+  background: #000;
+}
+.progress-container .progress {
+  height: 100%;
+  width: 0%;
+  border-radius: 0 10px 10px 0;
+  /* background: #ff4754; */
+  background-color: #6634db;
+  transition: width 2s ease;
+}
+
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 90%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.popup-content {
+  border-radius: 8px;
+  background-color: #242424;
+  margin: 22% auto;
+  padding: 30px;
+  width: 30%;
+  text-align: center;
+}
