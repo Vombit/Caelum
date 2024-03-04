@@ -41,11 +41,11 @@ window.add_item = function (msg, fsize) {
   let itemsDiv = document.querySelector('.items');
   itemsDiv.appendChild(div);
 }
-function update_token(arg) {
-  window.PyHandler.settings_token(arg)
+function update_token(id, arg) {
+  window.PyHandler.settings_token(id, arg)
 }
-function update_id(arg) {
-  window.PyHandler.settings_id(arg)
+function update_id(id, arg) {
+  window.PyHandler.settings_id(id, arg)
 }
 function show_hide_settings() {
   var block_settings = document.querySelector('.settings');
@@ -70,3 +70,82 @@ function openPopup(text) {
 function closePopup() {
   document.getElementById('popup').style.display = 'none';
 }
+
+
+function context_menu_creator(e) {
+  var context = document.createElement('div');
+  var filenameElement = e.target.parentElement.getElementsByClassName('filename')[0];
+  context.id = "context_menu";
+  console.log(filenameElement)
+  context.innerHTML = `
+      <div onclick="window.PyHandler.del_item('${filenameElement.innerText}')">delete</div>
+      `;
+  context.style.top = e.y + 'px';
+  context.style.left = e.x + 'px';
+  document.getElementsByTagName("body")[0].appendChild(context);
+}
+
+document.addEventListener("contextmenu", function(e) {
+  if (e.target.parentElement.className == 'item') {
+      if (!document.getElementById("context_menu")) {
+          context_menu_creator(e)
+      } else {
+          document.getElementById("context_menu").remove();
+          context_menu_creator(e)
+      }
+  }
+  window.event.returnValue = false;
+}, false);
+document.addEventListener("click", function(e) {
+  if (e.target.id != "context_menu" && document.getElementById("context_menu")) {
+      document.getElementById("context_menu").remove();
+  }
+});
+
+function addBotLine(id=null, bot_token=null, chat_token=null) {
+  var container = document.createElement('div');
+  container.className = 'form-row';
+
+  var bot_inputContainer = document.createElement('div');
+  bot_inputContainer.className = 'input-data';
+  var bot_labelElement = document.createElement('label');
+  bot_labelElement.className = 'noselect';
+  bot_labelElement.textContent = 'Bot token';
+  var bot_inputElement = document.createElement('input');
+  bot_inputElement.type = 'text';
+  bot_inputElement.required = true;
+  bot_inputElement.id = id;
+  bot_inputElement.setAttribute('value', bot_token);
+  bot_inputElement.addEventListener('change', (event) => update_token(event.target.id, event.target.value));
+
+  var underline = document.createElement('div');
+  underline.className = 'underline';
+
+  var chat_inputContainer = document.createElement('div');
+  chat_inputContainer.className = 'input-data';
+  var chat_labelElement = document.createElement('label');
+  chat_labelElement.className = 'noselect';
+  chat_labelElement.textContent = 'Chat id';
+  var chat_inputElement = document.createElement('input');
+  chat_inputElement.type = 'text';
+  chat_inputElement.required = true;
+  chat_inputElement.id = id;
+  chat_inputElement.setAttribute('value', chat_token);
+  chat_inputElement.addEventListener('change', (event) => update_id(event.target.id, event.target.value));
+
+
+  chat_inputContainer.appendChild(chat_inputElement);
+  chat_inputContainer.appendChild(underline);
+  chat_inputContainer.appendChild(chat_labelElement);
+
+  bot_inputContainer.appendChild(bot_inputElement);
+  bot_inputContainer.appendChild(underline);
+  bot_inputContainer.appendChild(bot_labelElement);
+
+  container.appendChild(bot_inputContainer);
+  container.appendChild(chat_inputContainer);
+
+  return container;
+}
+
+var block_settings = document.querySelector('.settings form');

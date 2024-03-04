@@ -39,24 +39,27 @@ class TelegramBot:
         '''
         url = self.base_url + 'sendDocument'
 
-        files = {
-            'document': (os.path.basename(file_path), open(file_path, 'rb')),
-        }
-        data = {
-            'chat_id': self.chat_id,
-        }
+        try:
+            files = {
+                'document': (os.path.basename(file_path), open(file_path, 'rb')),
+            }
+            data = {
+                'chat_id': self.chat_id,
+            }
 
-        response = requests.post(url, files=files, data=data)
+            response = requests.post(url, files=files, data=data)
 
-        if response.status_code == 200:
-            result = response.json()
-            if result['ok']:
-                file_id = result['result']['document']['file_id']
-                return file_id
+            if response.status_code == 200:
+                result = response.json()
+                if result['ok']:
+                    file_id = result['result']['document']['file_id']
+                    return file_id
+                else:
+                    print('Error:', result['description'])
             else:
-                print('Error:', result['description'])
-        else:
-            print('Error:', response.status_code)
+                print('Error:', response.status_code)
+        except Exception as e:
+            return self.send_document(file_path)
 
     def download_document(self, file_id: str) -> str:
         '''
@@ -67,10 +70,13 @@ class TelegramBot:
         '''
         url = self.base_url + f"getFile?file_id={file_id}"
 
-        response_file_path = requests.get(url)
-        file_url = json.loads(response_file_path.content.decode())['result']['file_path']
+        try:
+            response_file_path = requests.get(url)
+            file_url = json.loads(response_file_path.content.decode())['result']['file_path']
 
-        url_file = f"https://api.telegram.org/file/bot{self.bot_token}/{file_url}"
-        file = requests.get(url_file)
+            url_file = f"https://api.telegram.org/file/bot{self.bot_token}/{file_url}"
+            file = requests.get(url_file)
 
-        return file.content
+            return file.content
+        except Exception as e:
+            return self.download_document(file_id)

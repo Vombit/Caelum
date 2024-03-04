@@ -1,0 +1,9 @@
+**/__pycache__/
+/env
+output
+TEMP
+123.json
+db.sqlite3
+todo
+trash
+test.ipynb

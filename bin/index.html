@@ -38,7 +38,7 @@
           </svg>
       </div>
       <div class="version noselect">
-        v 0.9.3.2
+        v 1.0.0
       </div>
       <div class="line_block">
         <div onclick="window.PyHandler.open_donation()" class="bymecoffee" title="By me coffee">
@@ -98,20 +98,13 @@
       
       <div class="container">
         <form action="#">
-          <div class="form-row">
-            <div class="input-data">
-             <input type="text" id="bot_token" onChange="update_token(this.value);" required>
-             <div class="underline"></div>
-             <label for="" class="noselect">Bot token</label>
-            </div>
-            <div class="input-data">
-             <input type="text" id="chat_id" onChange="update_id(this.value);" required>
-             <div class="underline"></div>
-             <label for="" class="noselect">Chat id</label>
-            </div>
-          </div>
         </form>
       </div>
+
+      <div class="fold noselect" onclick="window.PyHandler.add_bot()">
+        Add bot
+      </div>
+
       <div class="settings_sub noselect">
         <a onclick="window.PyHandler.open_guide()" class="url-underline noselect">manual</a>
         <a onclick="window.PyHandler.last_ver()" class="url-underline noselect">last version</a>

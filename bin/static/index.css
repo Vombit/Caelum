@@ -158,6 +158,7 @@ div svg:hover {
   width: 80%;
 }
 .container form .form-row{
+  margin-top: 20px;
   display: flex;
 }
 form .form-row .input-data{
@@ -255,4 +256,23 @@ form .form-row .input-data{
   padding: 30px;
   width: 30%;
   text-align: center;
+}
+
+
+#context_menu {
+  position: absolute;
+}
+#context_menu div {
+  background-color: #444;
+  height: 25px;
+  text-align: center;
+  color: #fff;
+  transition: transform 300ms ease-out;
+  border-radius: 8px;
+  padding: 0px 10px;
+}
+#context_menu div:hover {
+  background-color: #6634db;
+  transform: scale(1.02);
+  cursor: pointer;
 }

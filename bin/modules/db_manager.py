@@ -32,7 +32,11 @@ class DBManager:
                         )''')
         
         # Add default values for the bot settings table
-        self.cursor.execute('INSERT INTO bot_settings (domain, bot_token, chat_id) VALUES(?, ?, ?)', ('telegram', 'none', 'none'))
+        self.cursor.execute('SELECT * FROM bot_settings')
+        rows = self.cursor.fetchall()
+        if not rows:
+            self.cursor.execute('INSERT INTO bot_settings (domain, bot_token, chat_id) VALUES(?, ?, ?)', ('telegram', 'NULL', 'NULL'))
+            self.conn.commit()
 
 
     def add_file(self, file_name: str, file_hash: str) -> None:
@@ -73,7 +77,7 @@ class DBManager:
                         ''')
         self.conn.commit()
        
-    def add_bot(self, bot_token: str, chat_id:str) -> None:
+    def add_bot(self) -> int:
         '''
         Add or update the current bot settings.
         
@@ -82,14 +86,29 @@ class DBManager:
             chat_id (str): The ID of the chat where to send messages.
         '''
         self.cursor.execute(f'''INSERT INTO 
-                            bot_settings (domain, bot_token, chat_id) 
-                            VALUES(?, ?, ?), (
+                            'bot_settings' (domain, bot_token, chat_id) 
+                            VALUES(
                                 'telegram', 
-                                {bot_token}, 
-                                {chat_id}
+                                NULL, 
+                                NULL
                             )
                             ''')
         self.conn.commit()
+        new_bot_data = self.cursor.lastrowid
+        return new_bot_data
+
+    def del_file(self, file_name: str) -> None:
+        self.cursor.execute(f"DELETE FROM files WHERE file_name = '{file_name}'")
+        self.conn.commit()
+        
+    def del_chunks(self, main_file_hash: str) -> None:
+        self.cursor.execute(f"DELETE FROM chunks WHERE main_file = '{main_file_hash}'")
+        self.conn.commit()
+       
+    def del_bot(self, bot_token: str, chat_id:str) -> None:
+        '''Not implemented'''
+
+
 
 
     def edit_file(self) -> None:
@@ -100,7 +119,7 @@ class DBManager:
         pass
     
 
-    def edit_bot(self, name:str, token:str) -> None:
+    def edit_bot(self, name:str, token:str, ids:int) -> None:
         '''
         Edit the bot settings.
         
@@ -108,7 +127,7 @@ class DBManager:
             name (str): The name of the setting to edit ('domain', 'bot_token' or 'chat_id').
             token (str): The new value for the setting.
         '''
-        self.cursor.execute(f'UPDATE bot_settings SET {name} = ? WHERE id = 1', (str(token),))
+        self.cursor.execute(f'UPDATE bot_settings SET {name} = ? WHERE id = {ids}', (str(token),))
         self.conn.commit()
     
     def get_files(self) -> list:
@@ -130,3 +149,9 @@ class DBManager:
         '''Get the current bot settings.'''
         self.cursor.execute("SELECT * FROM bot_settings WHERE id=1")
         return self.cursor.fetchone()
+    
+    def get_bots(self) -> tuple:
+        '''Get the current bots settings.'''
+        self.cursor.execute("SELECT * FROM bot_settings")
+        return self.cursor.fetchall()
+
