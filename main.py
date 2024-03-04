@@ -79,7 +79,6 @@ class CallHandler(QObject):
         Initialize the CallHandler class with TelegramBot and DBManager instances.
         """
         self.update_data_bots()
-
         super(CallHandler, self).__init__()
         
     @pyqtSlot()
@@ -87,12 +86,14 @@ class CallHandler(QObject):
         self.t_bots = []
         for obj in db.get_bots():
             self.t_bots.append(TelegramBot(obj[2], obj[3]))
-        
+            
     @pyqtSlot()
     def load(self) -> None:
         """
         Load bot token and file list from database to the frontend.
         """
+        
+        view.page().runJavaScript(f"block_settings.innerHTML = '';")
         tg_bots = db.get_bots()
         if tg_bots:
             for obj in tg_bots:
