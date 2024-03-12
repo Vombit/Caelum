@@ -1,5 +1,8 @@
 # Caelum
 
+![Main window](https://github.com/Vombit/Caelum/tree/main/images/main_window.jpg?raw=true)
+
+
 ### Features
 
 - Get "unlimited" storage
