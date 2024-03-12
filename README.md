@@ -1,6 +1,6 @@
 # Caelum
 
-![Main window](https://github.com/Vombit/Caelum/tree/main/images/main_window.jpg?raw=true)
+<img src="https://github.com/Vombit/Caelum/blob/main/images/main_window.jpg?raw=true" width="600">
 
 
 ### Features
