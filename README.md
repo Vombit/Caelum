@@ -17,5 +17,5 @@
 ### TODO
 
 > 1) Encryption
-> 2) Multiple download agents
+> 2) ~~Multiple download agents~~
 > 3) The ability to share files

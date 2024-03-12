@@ -20,8 +20,10 @@ class FileManager:
         '''
         Create a new directory if it doesn't exist.
 
-        :param path: The absolute path of the directory to create.
-        :return: The created directory path.
+        Args:
+            path (str): The absolute path of the directory to create.
+        
+        Return: The created directory path.
         '''
         if not os.path.exists(path):
             os.mkdir(path)
@@ -32,20 +34,24 @@ class FileManager:
         '''
         Generate an MD5 hash for the given file.
 
-        :param file_path: The absolute path of the file.
-        :return: An MD5 hash string of the file content.
+        Args:
+            file_path (str): The absolute path of the file.
+        
+        Return: An MD5 hash string of the file content.
         '''
         hash_md5 = hashlib.md5()
         with open(file_path, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
                 hash_md5.update(chunk)
+                
         return hash_md5.hexdigest()
 
     def merge_chunks(self, filename: str) -> None:
         '''
         Merge all loaded chunks with the given filename and save to output path.
 
-        :param filename: The name of the file to merge.
+        Args:
+            filename (str): The name of the file to merge.
         '''
         chunks = [file for file in os.listdir(self.loaded_chunks)]
         chunks = sorted(chunks, key=lambda x: int(x.split('_')[1]))
@@ -61,8 +67,10 @@ class FileManager:
         '''
         Split the given file into chunks of given size and yield each chunk.
 
-        :param file_path: The absolute path of the file to split.
-        :yield: A tuple containing the filename and the data of each chunk.
+        Args:
+            file_path (str): The absolute path of the file to split.
+            
+        Yield: A tuple containing the filename and the data of each chunk.
         '''
         with open(file_path, 'rb') as f:
             i = 0   
@@ -71,13 +79,15 @@ class FileManager:
                 if not data:
                     break
                 i+=1
+                
                 yield self.hash_filename + '_' + str(i), data
 
     def process_file(self, file_path: str) -> None:
         '''
         Split the given file into chunks and save them.
 
-        :param file_path: The absolute path of the file to process.
+        Args:
+            file_path (str): The absolute path of the file to process.
         '''
         self.hash_filename = self.get_file_hash(file_path)
 
@@ -89,7 +99,7 @@ class FileManager:
         '''
         Get a list of all split chunks in the `split_chunks` directory.
 
-        :return: A list of file names of all split chunks.
+        Return: A list of file names of all split chunks.
         '''
         chunks = [file for file in os.listdir(self.split_chunks)]
         chunks = sorted(chunks, key=lambda x: int(x.split('_')[1]))

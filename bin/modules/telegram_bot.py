@@ -3,21 +3,24 @@ import json
 import requests
 
 class TelegramBot:
-    def __init__(self, bot_token=None, chat_id=None) -> None:
+    def __init__(self, bot_token:str = None, chat_id:str = None) -> None:
         '''
         Initialization of the TelegramBot class with optional bot token and chat ID
+        
+        Args:
+            bot_token (str): Api bot token.
+            chat_id (str): Chat id.
         '''
         self.bot_token = bot_token
         self.chat_id = chat_id
         self.base_url = f'https://api.telegram.org/bot{self.bot_token}/'
 
-    
     def update_bot_token(self, token: str) -> None:
         '''
         Updates the bot token for the TelegramBot object.
 
-        :param token: The new bot token to be used.
-        :return: None
+        Args:
+            token (str): The new bot token to be used.
         '''
         self.bot_token = token
         
@@ -25,8 +28,8 @@ class TelegramBot:
         '''
         Updates the chat ID for the TelegramBot object.
 
-        :param id: The new chat ID to be used.
-        :return: None
+        Args:
+            id (str): The new chat ID to be used.
         '''
         self.chat_id = id
 
@@ -34,8 +37,10 @@ class TelegramBot:
         '''
         Sends a document (file) to the chat using Telegram bot API.
 
-        :param file_path: The local path of the file to be sent.
-        :return: File ID of the uploaded document in Telegram API.
+        Args:
+            file_path (str): The local path of the file to be sent.
+            
+        Return: File ID of the uploaded document in Telegram API.
         '''
         url = self.base_url + 'sendDocument'
 
@@ -53,6 +58,7 @@ class TelegramBot:
                 result = response.json()
                 if result['ok']:
                     file_id = result['result']['document']['file_id']
+                    
                     return file_id
                 else:
                     print('Error:', result['description'])
@@ -65,8 +71,10 @@ class TelegramBot:
         '''
         Downloads a document (file) from Telegram API using bot token and file ID.
 
-        :param file_id: The file ID of the document to be downloaded.
-        :return: Content of the downloaded document as bytes.
+        Args:
+            file_id (str): The file ID of the document to be downloaded.
+        
+        Return: Content of the downloaded document as bytes.
         '''
         url = self.base_url + f"getFile?file_id={file_id}"
 
