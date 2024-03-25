@@ -13,7 +13,12 @@ import threading
 from bin.modules.file_manager import FileManager
 from bin.modules.telegram_bot import TelegramBot
 from bin.modules.db_manager import DBManager
-from bin.modules.additional_functions import bot_upload, bot_download, split_chunks, resource_path, check_healh_bot
+from bin.modules.additional_functions import (
+    bot_upload,
+    bot_download,
+    split_chunks,
+    resource_path,
+)
 
 fm = FileManager()
 db = DBManager()
@@ -21,6 +26,8 @@ lock = threading.Lock()
 
 
 class Worker(QRunnable):
+    """A QRunnable class for running a function asynchronously."""
+
     def __init__(self, function, *args, **kwargs):
         super().__init__()
         self.function = function
@@ -29,13 +36,14 @@ class Worker(QRunnable):
 
     @pyqtSlot()
     def run(self):
+        """Run the function as a worker thread."""
         self.function(*self.args, **self.kwargs)
 
 
 class CallHandler(QObject):
     def __init__(self):
         """
-        Initialize the CallHandler class 
+        Initialize the CallHandler class
         with TelegramBot and DBManager instances.
         """
         self.thread_pool = QThreadPool()
@@ -65,23 +73,31 @@ class CallHandler(QObject):
         tg_bots = db.get_bots()
         if tg_bots:
             for obj in tg_bots:
-                view.page().runJavaScript(f"block_settings.appendChild(addBotLine(\"{obj[0]}\", \"{obj[2]}\", \"{obj[3]}\"));")
+                view.page().runJavaScript(
+                    f'block_settings.appendChild(addBotLine("{obj[0]}", "{obj[2]}", "{obj[3]}"));'
+                )
 
         # for bot in self.t_bots:
         #     if not check_healh_bot(bot):
         #         print(bot.bot_token)
-                # worker = Worker(self.popup_message, self, 'check the correctness of the data from bot\'s:')
-                # self.thread_pool.start(worker)
+        #         worker = Worker(self.popup_message, self, 'check the correctness of the data from bot\'s:')
+        #         self.thread_pool.start(worker)
 
         # Get files from database and update GUI
         files = db.get_files()
         if files:
-            view.page().runJavaScript("document.querySelector('.empt_files').style.display = 'none';")
-            view.page().runJavaScript("document.querySelector('.items').innerHTML = '';")
+            view.page().runJavaScript(
+                "document.querySelector('.empt_files').style.display = 'none';"
+            )
+            view.page().runJavaScript(
+                "document.querySelector('.items').innerHTML = '';"
+            )
 
         for chunk in files:
             file_size = round(len(db.get_chunks(chunk[2])) * 20 / 1024, 2)
-            view.page().runJavaScript(f"window.add_item('{str(chunk[1])}', {file_size})")
+            view.page().runJavaScript(
+                f"window.add_item('{str(chunk[1])}', {file_size})"
+            )
 
     @pyqtSlot(str, result=str)
     def del_item(self, file_name: str) -> None:
@@ -94,19 +110,19 @@ class CallHandler(QObject):
 
     @pyqtSlot()
     def open_git(self) -> None:
-        webbrowser.open('https://github.com/Vombit/caelum')
+        webbrowser.open("https://github.com/Vombit/caelum")
 
     @pyqtSlot()
     def open_donation(self) -> None:
-        webbrowser.open('https://www.donationalerts.com/r/vombit_donation')
+        webbrowser.open("https://www.donationalerts.com/r/vombit_donation")
 
     @pyqtSlot()
     def open_guide(self) -> None:
-        webbrowser.open('https://github.com/Vombit/caelum/blob/main/MD/guide.md')
+        webbrowser.open("https://github.com/Vombit/caelum/blob/main/MD/guide.md")
 
     @pyqtSlot()
     def last_ver(self) -> None:
-        webbrowser.open('https://github.com/Vombit/caelum/releases/latest')
+        webbrowser.open("https://github.com/Vombit/caelum/releases/latest")
 
     @pyqtSlot(str, result=str)
     def downloader(self, file_name: str) -> None:
@@ -133,9 +149,8 @@ class CallHandler(QObject):
         threads = []
         for i, chunks in enumerate(split_chinks):
             my_thread = threading.Thread(
-                                        target=bot_download,
-                                        args=(chunks, self.t_bots[i])
-                                        )
+                target=bot_download, args=(chunks, self.t_bots[i])
+            )
             threads.append(my_thread)
             my_thread.start()
 
@@ -166,11 +181,9 @@ class CallHandler(QObject):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-        file_path, _ = QFileDialog.getOpenFileName(None,
-                                                   "Select File",
-                                                   "",
-                                                   "All Files (*)"
-                                                   )
+        file_path, _ = QFileDialog.getOpenFileName(
+            None, "Select File", "", "All Files (*)"
+        )
 
         if file_path:
             # Update the progress bar in JavaScript and display a loading popup
@@ -199,13 +212,8 @@ class CallHandler(QObject):
             threads = []
             for i, chunks in enumerate(split_chinks):
                 my_thread = threading.Thread(
-                                            target=bot_upload,
-                                            args=(
-                                                file_hash,
-                                                chunks,
-                                                self.t_bots[i]
-                                                )
-                                            )
+                    target=bot_upload, args=(file_hash, chunks, self.t_bots[i])
+                )
                 threads.append(my_thread)
                 my_thread.start()
 
@@ -224,7 +232,9 @@ class CallHandler(QObject):
     @pyqtSlot()
     def add_bot(self) -> None:
         new_bot = db.add_bot()
-        view.page().runJavaScript(f"block_settings.appendChild(addBotLine(\"{new_bot}\", \"NULL\", \"NULL\"));")
+        view.page().runJavaScript(
+            f'block_settings.appendChild(addBotLine("{new_bot}", "NULL", "NULL"));'
+        )
 
     @pyqtSlot(str)
     def remove_bot(self, bot_id) -> None:
@@ -247,9 +257,9 @@ class WebEngine(QWebEngineView):
         self.setContextMenuPolicy(Qt.NoContextMenu)
 
         # Set window title, icon and size
-        self.setWindowTitle('Caelum')
+        self.setWindowTitle("Caelum")
         self.setFixedSize(1000, 620)
-        self.setWindowIcon(QIcon(resource_path('bin/icon.ico')))
+        self.setWindowIcon(QIcon(resource_path("bin/icon.ico")))
 
     def closeEvent(self, evt):
         # Override close event to clear http cache before closing application
@@ -257,13 +267,13 @@ class WebEngine(QWebEngineView):
         super(WebEngine, self).closeEvent(evt)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     view = WebEngine()
     channel = QWebChannel()
     handler = CallHandler()
-    channel.registerObject('PyHandler', handler)
+    channel.registerObject("PyHandler", handler)
     view.page().setWebChannel(channel)
-    view.load(QUrl.fromLocalFile(resource_path('bin/index.html')))
+    view.load(QUrl.fromLocalFile(resource_path("bin/index.html")))
     view.show()
     app.exec_()

@@ -20,12 +20,7 @@ def bot_upload(file_hash: str, chunks: list, bot: object):
 
         try:
             lock.acquire(True)
-            db.add_chunk(
-                file_hash,
-                chunk_file_hash,
-                chunk.split('_')[1],
-                chunk_file_id
-            )
+            db.add_chunk(file_hash, chunk_file_hash, chunk.split("_")[1], chunk_file_id)
         finally:
             lock.release()
 
@@ -39,12 +34,12 @@ def bot_upload(file_hash: str, chunks: list, bot: object):
 
 def bot_download(chunks: list, bot: object):
     for chunk in chunks:
-        path_chunk = f'{fm.loaded_chunks}/{chunk[1]}_{chunk[3]}'
+        path_chunk = f"{fm.loaded_chunks}/{chunk[1]}_{chunk[3]}"
 
         loaded_file = bot.download_document(chunk[4])
 
         # Save the chunk to a file and remove it when done
-        with open(path_chunk, 'wb') as new_file:
+        with open(path_chunk, "wb") as new_file:
             new_file.write(loaded_file)
 
 
@@ -56,8 +51,8 @@ def split_chunks(file_list, num_threads):
 
 def resource_path(relative_path: str) -> str:
     """
-        Get the absolute path to the resource,
-        works for dev and for PyInstaller
+    Get the absolute path to the resource,
+    works for dev and for PyInstaller
     """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -69,7 +64,7 @@ def resource_path(relative_path: str) -> str:
 
 
 def check_healh_bot(bot: object) -> bool:
-    test_file = resource_path('bin/static/test.txt')
+    test_file = resource_path("bin/static/test.txt")
     if bot.send_document(test_file):
         return True
     return False
