@@ -7,3 +7,5 @@ db.sqlite3
 todo
 trash
 test.ipynb
+.vscode/settings.json
+db1.sqlite3

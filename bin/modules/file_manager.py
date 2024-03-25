@@ -3,6 +3,7 @@
 import os
 import hashlib
 
+
 class FileManager:
     def __init__(self) -> None:
         '''
@@ -22,7 +23,7 @@ class FileManager:
 
         Args:
             path (str): The absolute path of the directory to create.
-        
+
         Return: The created directory path.
         '''
         if not os.path.exists(path):
@@ -36,19 +37,20 @@ class FileManager:
 
         Args:
             file_path (str): The absolute path of the file.
-        
+
         Return: An MD5 hash string of the file content.
         '''
         hash_md5 = hashlib.md5()
         with open(file_path, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
                 hash_md5.update(chunk)
-                
+
         return hash_md5.hexdigest()
 
     def merge_chunks(self, filename: str) -> None:
         '''
-        Merge all loaded chunks with the given filename and save to output path.
+        Merge all loaded chunks with the given
+        filename and save to output path.
 
         Args:
             filename (str): The name of the file to merge.
@@ -56,12 +58,14 @@ class FileManager:
         chunks = [file for file in os.listdir(self.loaded_chunks)]
         chunks = sorted(chunks, key=lambda x: int(x.split('_')[1]))
 
-        with open(self.output_path + '/' + filename, 'wb') as output_file:
-            for chunk in chunks:
-                with open(os.path.join(self.loaded_chunks, chunk), 'rb') as input_file:
-                    output_file.write(input_file.read())
-                os.remove(self.loaded_chunks + '/' + chunk)
-
+        try:
+            with open(self.output_path + '/' + filename, 'wb') as output_file:
+                for chunk in chunks:
+                    with open(os.path.join(self.loaded_chunks, chunk), 'rb') as input_file:
+                        output_file.write(input_file.read())
+                    os.remove(self.loaded_chunks + '/' + chunk)
+        except Exception:
+            return self.merge_chunks(filename)
 
     def split_file(self, file_path: str) -> any:
         '''
@@ -69,17 +73,17 @@ class FileManager:
 
         Args:
             file_path (str): The absolute path of the file to split.
-            
+
         Yield: A tuple containing the filename and the data of each chunk.
         '''
         with open(file_path, 'rb') as f:
-            i = 0   
+            i = 0
             while True:
-                data = f.read(self.chunk_size *1024 * 1024)
+                data = f.read(self.chunk_size * 1024 * 1024)
                 if not data:
                     break
-                i+=1
-                
+                i += 1
+
                 yield self.hash_filename + '_' + str(i), data
 
     def process_file(self, file_path: str) -> None:
@@ -94,7 +98,7 @@ class FileManager:
         for file_name, data in self.split_file(file_path):
             with open(self.split_chunks + '/' + file_name, 'wb') as f:
                 f.write(data)
-                
+
     def get_split_chunks(self) -> list:
         '''
         Get a list of all split chunks in the `split_chunks` directory.
@@ -103,5 +107,5 @@ class FileManager:
         '''
         chunks = [file for file in os.listdir(self.split_chunks)]
         chunks = sorted(chunks, key=lambda x: int(x.split('_')[1]))
-        
+
         return chunks
