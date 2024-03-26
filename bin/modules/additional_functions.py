@@ -24,12 +24,16 @@ def bot_upload(file_hash: str, chunks: list, bot: object):
         finally:
             lock.release()
 
-        while True:
-            try:
-                os.remove(chunk_path)
-                break
-            except Exception:
-                time.sleep(0.3)
+        # while True:
+        #     try:
+        #         os.remove(chunk_path)
+        #         break
+        #     except Exception:
+        #         time.sleep(0.3)
+        try:
+            os.remove(chunk_path)
+        except Exception:
+            pass
 
 
 def bot_download(chunks: list, bot: object):

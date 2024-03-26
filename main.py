@@ -18,6 +18,7 @@ from bin.modules.additional_functions import (
     bot_download,
     split_chunks,
     resource_path,
+    check_healh_bot,
 )
 
 fm = FileManager()
@@ -77,11 +78,11 @@ class CallHandler(QObject):
                     f'block_settings.appendChild(addBotLine("{obj[0]}", "{obj[2]}", "{obj[3]}"));'
                 )
 
-        # for bot in self.t_bots:
-        #     if not check_healh_bot(bot):
-        #         print(bot.bot_token)
-        #         worker = Worker(self.popup_message, self, 'check the correctness of the data from bot\'s:')
-        #         self.thread_pool.start(worker)
+        for bot in self.t_bots:
+            if not check_healh_bot(bot):
+                print(bot.bot_token)
+                # worker = Worker(self.popup_message, self, 'check the correctness of the data from bot\'s:')
+                # self.thread_pool.start(worker)
 
         # Get files from database and update GUI
         files = db.get_files()

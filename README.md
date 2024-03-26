@@ -22,3 +22,6 @@
 > 1) Encryption
 > 2) ~~Multiple download agents~~
 > 3) The ability to share files
+> 4) resume the download
+> 5) check the availability of chunks
+> 6) percentage of document load
