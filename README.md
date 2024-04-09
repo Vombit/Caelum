@@ -25,3 +25,5 @@
 > 4) resume the download
 > 5) check the availability of chunks
 > 6) percentage of document load
+> 7) pause mode
+> 8) ~~checking if the chunk is downloaded, do not download it again~~

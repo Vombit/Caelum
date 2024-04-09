@@ -172,6 +172,14 @@ class DBManager:
 
         return self.cursor.fetchall()
 
+    def get_chunk(self, file_hash: str) -> str:
+        """
+        Get chunk info
+        """
+        self.cursor.execute(f"SELECT * FROM chunks WHERE hash = '{file_hash}'")
+
+        return self.cursor.fetchall()
+
     def get_chunks(self, main_file_hash: str) -> list:
         """
         Get all chunks from the 'chunks'

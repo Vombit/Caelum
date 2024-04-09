@@ -150,7 +150,7 @@ class CallHandler(QObject):
         threads = []
         for i, chunks in enumerate(split_chinks):
             my_thread = threading.Thread(
-                target=bot_download, args=(chunks, self.t_bots[i])
+                target=bot_download, args=(chunks, self.t_bots[i], self.t_bots)
             )
             threads.append(my_thread)
             my_thread.start()
@@ -163,7 +163,7 @@ class CallHandler(QObject):
         # Merge all chunks and update the progress bar in JavaScript
         view.page().runJavaScript("openPopup('merging files...')")
         view.page().runJavaScript("changeProgress(60)")
-        fm.merge_chunks(file_name)
+        fm.merge_chunks(file_name, file_hash)
         view.page().runJavaScript("openPopup('uploaded!')")
         view.page().runJavaScript("changeProgress(100)")
         time.sleep(2)

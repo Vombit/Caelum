@@ -47,7 +47,7 @@ class FileManager:
 
         return hash_md5.hexdigest()
 
-    def merge_chunks(self, filename: str) -> None:
+    def merge_chunks(self, filename: str, filehash: str) -> None:
         """
         Merge all loaded chunks with the given
         filename and save to output path.
@@ -55,7 +55,10 @@ class FileManager:
         Args:
             filename (str): The name of the file to merge.
         """
-        chunks = [file for file in os.listdir(self.loaded_chunks)]
+        chunks = []
+        for file in os.listdir(self.loaded_chunks):
+            if filehash in file:
+                chunks.append(file)
         chunks = sorted(chunks, key=lambda x: int(x.split("_")[1]))
 
         try:

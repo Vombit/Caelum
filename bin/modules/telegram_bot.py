@@ -5,7 +5,7 @@ import requests
 
 class TelegramBot:
     """
-    test
+    class for telegram bot
     """
 
     def __init__(self, bot_token: str = None, chat_id: str = None) -> None:
@@ -56,17 +56,22 @@ class TelegramBot:
         data = {
             "chat_id": self.chat_id,
         }
+        # data = {"chat_id": str(self.chat_id), "document": (open(file_path, "rb"))}
         response = requests.post(url, files=files, data=data)
         for _ in range(10):
-            if response.status_code == 200:
-                result = response.json()
-                if result["ok"]:
-                    file_id = result["result"]["document"]["file_id"]
+            try:
+                if response.status_code == 200:
+                    result = response.json()
+                    if result["ok"]:
+                        file_id = result["result"]["document"]["file_id"]
 
-                    return file_id
+                        return file_id
+            except Exception:
+                print(Exception)
+            
             response = requests.post(url, files=files, data=data)
         else:
-            return {}
+            return ""
 
     def download_document(self, file_id: str) -> str:
         """
@@ -90,8 +95,7 @@ class TelegramBot:
                     f"https://api.telegram.org/file/bot{self.bot_token}/{file_url}"
                 )
                 file = requests.get(url_file)
-
                 return file.content
             response = requests.get(url)
         else:
-            return {}
+            return ""
