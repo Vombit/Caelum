@@ -23,9 +23,9 @@
 ## Table Of Contents
 
 * [About the Project](#about-the-project)
-* [Getting Started](#getting-started)
+<!-- * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
+  * [Installation](#installation) -->
 * [Usage](#usage)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
@@ -103,7 +103,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/Vombit/Caelum/blob/main/LICENSE.md) for more information.
+See [LICENSE](https://github.com/Vombit/Caelum/blob/main/LICENSE.md) for more information.
 
 ## Authors
 
