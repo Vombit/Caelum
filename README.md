@@ -18,7 +18,7 @@
   </p>
 </p>
 
-![Downloads](https://img.shields.io/github/downloads/Vombit/Caelum/total) ![Contributors](https://img.shields.io/github/contributors/Vombit/Caelum?color=dark-green) ![Forks](https://img.shields.io/github/forks/Vombit/Caelum?style=social) ![Stargazers](https://img.shields.io/github/stars/Vombit/Caelum?style=social) ![Issues](https://img.shields.io/github/issues/Vombit/Caelum) ![License](https://img.shields.io/github/license/Vombit/Caelum) 
+![Downloads](https://img.shields.io/github/downloads/Vombit/Caelum/total) ![Contributors](https://img.shields.io/github/contributors/Vombit/Caelum?color=dark-green) ![Forks](https://img.shields.io/github/forks/Vombit/Caelum?style=social) ![Stargazers](https://img.shields.io/github/stars/Vombit/Caelum?style=social) ![Issues](https://img.shields.io/github/issues/Vombit/Caelum)
 
 ## Table Of Contents
 
