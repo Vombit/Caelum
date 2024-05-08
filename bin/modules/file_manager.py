@@ -5,15 +5,15 @@ import hashlib
 
 
 class FileManager:
-    def __init__(self) -> None:
+    def __init__(self, base_path="TEMP", base_output="output") -> None:
         """
         Initialize the FileManager with default paths and chunk size.
         Create necessary directories if they don't exist yet.
         """
-        self.base_path = self.create_path("TEMP")
+        self.base_path = self.create_path(base_path)
         self.split_chunks = self.create_path(self.base_path + "/split")
         self.loaded_chunks = self.create_path(self.base_path + "/loaded")
-        self.output_path = self.create_path("output")
+        self.output_path = self.create_path(base_output)
 
         self.chunk_size = 20  # size on MB (type: int)
 
@@ -47,7 +47,7 @@ class FileManager:
 
         return hash_md5.hexdigest()
 
-    def merge_chunks(self, filename: str, filehash: str) -> None:
+    def merge_chunks(self, filename: str, filehash: str, filepath=None) -> None:
         """
         Merge all loaded chunks with the given
         filename and save to output path.
@@ -55,8 +55,11 @@ class FileManager:
         Args:
             filename (str): The name of the file to merge.
         """
+        if not filepath:
+            filepath = self.loaded_chunks
+
         chunks = []
-        for file in os.listdir(self.loaded_chunks):
+        for file in os.listdir(filepath):
             if filehash in file:
                 chunks.append(file)
         chunks = sorted(chunks, key=lambda x: int(x.split("_")[1]))
@@ -65,10 +68,10 @@ class FileManager:
             with open(self.output_path + "/" + filename, "wb") as output_file:
                 for chunk in chunks:
                     with open(
-                        os.path.join(self.loaded_chunks, chunk), "rb"
+                        os.path.join(filepath, chunk), "rb"
                     ) as input_file:
                         output_file.write(input_file.read())
-                    os.remove(self.loaded_chunks + "/" + chunk)
+                    os.remove(filepath + "/" + chunk)
         except Exception:
             return self.merge_chunks(filename)
 
@@ -104,13 +107,16 @@ class FileManager:
             with open(self.split_chunks + "/" + file_name, "wb") as f:
                 f.write(data)
 
-    def get_split_chunks(self) -> list:
+    def get_split_chunks(self, dir_chunks=None) -> list:
         """
         Get a list of all split chunks in the `split_chunks` directory.
 
         Return: A list of file names of all split chunks.
         """
-        chunks = [file for file in os.listdir(self.split_chunks)]
+        if not dir_chunks:
+            dir_chunks = self.split_chunks
+
+        chunks = [file for file in os.listdir(dir_chunks)]
         chunks = sorted(chunks, key=lambda x: int(x.split("_")[1]))
 
         return chunks
