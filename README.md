@@ -14,7 +14,6 @@
     <br/>
     <br/>
     <a href="https://github.com/Vombit/Caelum/issues">Report Bug</a>
-    .
   </p>
 </p>
 
