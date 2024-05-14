@@ -68,7 +68,7 @@ class TelegramBot:
                         return file_id
             except Exception:
                 print(Exception)
-            
+
             response = requests.post(url, files=files, data=data)
         else:
             return ""

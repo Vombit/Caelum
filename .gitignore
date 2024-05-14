@@ -10,3 +10,4 @@ test.ipynb
 db*.sqlite3
 dev.json
 main.json
+tests/test_data/config.json
