@@ -3,7 +3,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/Vombit/Caelum">
-    <img src="https://raw.githubusercontent.com/Vombit/Caelum/main/bin/icon.ico" alt="Logo" width="80" height="80">
+    <img src="/bin/icon.ico" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Caelum</h3>
@@ -34,7 +34,7 @@
 
 ## About The Project
 
-![Screen Shot](https://github.com/Vombit/Caelum/blob/main/images/main_window.jpg?raw=true)
+![Screen Shot](/images/main_window.jpg?raw=true)
 
 Introducing a revolutionary cloud storage solution that prioritizes convenience, accessibility, and security. Our project offers a seamless way to store and manage your files, providing you with a hassle-free experience.
 
