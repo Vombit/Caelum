@@ -108,6 +108,8 @@ See [LICENSE](https://github.com/Vombit/Caelum/blob/main/LICENSE.md) for more in
 
 * **Vombit** - *developer* - [Vombit](https://github.com/Vombit) - *project management*
 
+You can also support me with a cup of coffee: [donate](https://www.donationalerts.com/r/vombit_donation)
+
 ## Acknowledgements
 
 * [void](void)
