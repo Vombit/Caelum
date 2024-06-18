@@ -184,8 +184,9 @@ class DBManager:
         self.__cursor.execute('SELECT file_filters FROM files')
         filters_list = []
         for row in self.__cursor.fetchall():
-            filters = row[0].split(', ')
-            filters_list.extend(filters)
+            if row is not None:
+                filters = row[0].split(', ') if row[0] else []
+                filters_list.extend(filters)
 
         unique_filters = sorted(set(filters_list))
 
