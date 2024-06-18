@@ -1,6 +1,3 @@
-const progressbar = document.querySelector(".progress");
-const popup = document.getElementById('popup');
-
 window.onload = function () {
   try {
     new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -10,10 +7,11 @@ window.onload = function () {
     window.console.log(e)
   }
   setTimeout(function () {
-    window.PyHandler.load()
-  }, 500);
+    window.PyHandler.load_data()
+  }, 250);
 }
 
+// rewrite this
 window.add_item = function (msg, fsize) {
   let div = document.createElement('div');
   div.className = 'item';
@@ -21,6 +19,7 @@ window.add_item = function (msg, fsize) {
   let filename = document.createElement('div');
   filename.className = 'filename';
   filename.textContent = msg;
+  filename.title = msg;
 
   let download = document.createElement('div');
   download.className = 'btn_download noselect';
@@ -41,6 +40,87 @@ window.add_item = function (msg, fsize) {
   let itemsDiv = document.querySelector('.items');
   itemsDiv.appendChild(div);
 }
+// ###
+
+function clear_filters(folder) {
+  document.querySelector('.folder.active').classList.remove('active');
+  folder.classList.add('active');
+  window.PyHandler.start_page();
+}
+function add_folder(name) {
+  const folderElement = document.querySelector('.folders');
+  let newFolder = document.createElement('div');
+  newFolder.className = 'folder';
+  newFolder.textContent = name;
+  newFolder.addEventListener('click', () => {
+    folderElement.querySelector('.folder.active').classList.remove('active');
+    newFolder.classList.add('active');
+    window.PyHandler.filtered_page(name)
+  });
+  folderElement.appendChild(newFolder);
+}
+window.add_filters = function(filters_array) {
+  var folders = document.querySelector('.folders');
+  var elements = folders.querySelectorAll('.folder');
+  if (elements.length >= 3) {
+    for (var i = 2; i < elements.length; i++) {
+      folders.removeChild(elements[i]);
+    }
+  }
+
+  filters_array.forEach((folder) => {
+    add_folder(folder);
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const progressbar = document.querySelector(".progress");
+const popup = document.getElementById('popup');
+
 function update_token(id, arg) {
   window.PyHandler.settings_token(id, arg)
 }

@@ -2,19 +2,26 @@ import sqlite3
 
 
 class DBManager:
-    def __init__(self) -> None:
-        self.conn = sqlite3.connect("db.sqlite3", check_same_thread=False)
-        self.cursor = self.conn.cursor()
+    """
+    pass
+    """
+    def __init__(self, db_path="db.sqlite3") -> None:
+        self.__conn = sqlite3.connect(db_path, check_same_thread=False)
+        self.__cursor = self.__conn.cursor()
 
         # Create tables if they don't exist
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS
+        self.__cursor.execute("""CREATE TABLE IF NOT EXISTS
                         files (
                             id INTEGER PRIMARY KEY,
                             file_name TEXT UNIQUE,
                             hash TEXT UNIQUE
                         )""")
+        try:
+            self.__cursor.execute("""ALTER TABLE files ADD COLUMN file_filters TEXT""")
+        except sqlite3.OperationalError as e:
+            print(e)
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS
+        self.__cursor.execute("""CREATE TABLE IF NOT EXISTS
                         chunks (
                             id INTEGER PRIMARY KEY,
                             main_file TEXT,
@@ -24,7 +31,7 @@ class DBManager:
                             key TEXT
                         )""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS
+        self.__cursor.execute("""CREATE TABLE IF NOT EXISTS
                         bot_settings (
                             id INTEGER PRIMARY KEY,
                             domain TEXT,
@@ -33,14 +40,14 @@ class DBManager:
                         )""")
 
         # Add default values for the bot settings table
-        self.cursor.execute("SELECT * FROM bot_settings")
-        rows = self.cursor.fetchall()
+        self.__cursor.execute("SELECT * FROM bot_settings")
+        rows = self.__cursor.fetchall()
         if not rows:
-            self.cursor.execute(
+            self.__cursor.execute(
                 "INSERT INTO bot_settings (domain, bot_token, chat_id) VALUES(?, ?, ?)",
                 ("telegram", "NULL", "NULL"),
             )
-            self.conn.commit()
+            self.__conn.commit()
 
     def add_file(self, file_name: str, file_hash: str) -> None:
         """
@@ -50,14 +57,14 @@ class DBManager:
             file_name (str): The name of the file.
             file_hash (str): The hash of the file content.
         """
-        self.cursor.execute(f"""INSERT INTO
+        self.__cursor.execute(f"""INSERT INTO
                             'files' (file_name, hash)
                             VALUES(
                                 '{file_name}',
                                 '{file_hash}'
                             )
                             """)
-        self.conn.commit()
+        self.__conn.commit()
 
     def add_chunk(
         self, main_file_hash: str, chunk_hash: str, chunk_index: str, chunk_file_id: str
@@ -71,7 +78,7 @@ class DBManager:
             chunk_index (int): The index of the chunk in the parent file.
             chunk_file_id (str): The ID of the current chunk.
         """
-        self.cursor.execute(f"""INSERT INTO
+        self.__cursor.execute(f"""INSERT INTO
                         'chunks' (main_file, hash, chunk_index, file_id)
                         VALUES(
                             '{main_file_hash}',
@@ -80,7 +87,7 @@ class DBManager:
                             '{chunk_file_id}'
                         )
                         """)
-        self.conn.commit()
+        self.__conn.commit()
 
     def add_bot(self) -> int:
         """
@@ -88,7 +95,7 @@ class DBManager:
 
         Return: pos bot in data table
         """
-        self.cursor.execute("""INSERT INTO
+        self.__cursor.execute("""INSERT INTO
                             'bot_settings' (domain, bot_token, chat_id)
                             VALUES(
                                 'telegram',
@@ -96,8 +103,8 @@ class DBManager:
                                 NULL
                             )
                             """)
-        self.conn.commit()
-        new_bot_data = self.cursor.lastrowid
+        self.__conn.commit()
+        new_bot_data = self.__cursor.lastrowid
 
         return new_bot_data
 
@@ -108,8 +115,8 @@ class DBManager:
         Args:
             file_name (str): File name in DB.
         """
-        self.cursor.execute(f"DELETE FROM files WHERE file_name = '{file_name}'")
-        self.conn.commit()
+        self.__cursor.execute(f"DELETE FROM files WHERE file_name = '{file_name}'")
+        self.__conn.commit()
 
     def del_chunks(self, main_file_hash: str) -> None:
         """
@@ -118,8 +125,8 @@ class DBManager:
         Args:
             main_file_hash (str): Own file hash in DB.
         """
-        self.cursor.execute(f"DELETE FROM chunks WHERE main_file = '{main_file_hash}'")
-        self.conn.commit()
+        self.__cursor.execute(f"DELETE FROM chunks WHERE main_file = '{main_file_hash}'")
+        self.__conn.commit()
 
     def del_bot(self, bot_id: int) -> None:
         """
@@ -128,8 +135,8 @@ class DBManager:
         Args:
             bot_id (int): bot index in db.
         """
-        self.cursor.execute(f"DELETE FROM bot_settings WHERE id = '{bot_id}'")
-        self.conn.commit()
+        self.__cursor.execute(f"DELETE FROM bot_settings WHERE id = '{bot_id}'")
+        self.__conn.commit()
 
     def edit_file(self) -> None:
         """Not implemented"""
@@ -146,10 +153,10 @@ class DBManager:
             token (str): The new value for the setting.
             ids (int): The 'id' in table.
         """
-        self.cursor.execute(
+        self.__cursor.execute(
             f"UPDATE bot_settings SET {name} = ? WHERE id = {ids}", (str(token),)
         )
-        self.conn.commit()
+        self.__conn.commit()
 
     def get_files(self) -> list:
         """
@@ -158,9 +165,9 @@ class DBManager:
         Return:
             list all files.
         """
-        self.cursor.execute("SELECT * FROM files")
+        self.__cursor.execute("SELECT * FROM files")
 
-        return self.cursor.fetchall()
+        return self.__cursor.fetchall()
 
     def get_file_by_name(self, name: str) -> list:
         """
@@ -168,17 +175,35 @@ class DBManager:
 
         Return: data file from table.
         """
-        self.cursor.execute(f"SELECT * FROM files WHERE file_name = '{name}'")
+        self.__cursor.execute(f"SELECT * FROM files WHERE file_name = '{name}'")
 
-        return self.cursor.fetchall()
+        return self.__cursor.fetchall()
+
+
+    def get_filters(self) -> list:
+        self.__cursor.execute('SELECT file_filters FROM files')
+        filters_list = []
+        for row in self.__cursor.fetchall():
+            filters = row[0].split(', ')
+            filters_list.extend(filters)
+
+        unique_filters = sorted(set(filters_list))
+
+        return unique_filters
+
+    def get_filter_files(self, filter: str) -> list:
+        self.__cursor.execute(f"SELECT * FROM files WHERE file_filters GLOB '*{filter}*';")
+
+        return self.__cursor.fetchall()
+
 
     def get_chunk(self, file_hash: str) -> str:
         """
         Get chunk info
         """
-        self.cursor.execute(f"SELECT * FROM chunks WHERE hash = '{file_hash}'")
+        self.__cursor.execute(f"SELECT * FROM chunks WHERE hash = '{file_hash}'")
 
-        return self.cursor.fetchall()
+        return self.__cursor.fetchall()
 
     def get_chunks(self, main_file_hash: str) -> list:
         """
@@ -187,11 +212,11 @@ class DBManager:
 
         Return: all chunks.
         """
-        self.cursor.execute(
+        self.__cursor.execute(
             f"SELECT * FROM chunks WHERE main_file = '{main_file_hash}'"
         )
 
-        return self.cursor.fetchall()
+        return self.__cursor.fetchall()
 
     def get_bots(self) -> tuple:
         """
@@ -199,6 +224,6 @@ class DBManager:
 
         Return: data all bots.
         """
-        self.cursor.execute("SELECT * FROM bot_settings")
+        self.__cursor.execute("SELECT * FROM bot_settings")
 
-        return self.cursor.fetchall()
+        return self.__cursor.fetchall()

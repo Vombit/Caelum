@@ -25,7 +25,7 @@ body {
 main {
   display: grid;
   grid-template-columns: 230px auto;
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
 }
 .items {
   display: grid;
@@ -108,16 +108,48 @@ footer div {
   line-height: 32px;
 }
 div svg {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   transition: transform 300ms ease-out;
 }
 div svg:hover {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   transform: scale(1.1);
   cursor: pointer;
 }
+.folds .line_block div svg {
+  width: 22px;
+  height: 27px;
+  transition: 0.5s;
+}
+
+/* .folds .line_block div svg:hover {
+  transform: rotate(120deg)
+} */
+
+.folders {
+  margin-top: 15px;
+  height: 475px;
+  overflow-y: auto;
+}
+
+.folder {
+  background-color: #55555571;
+  margin: 5px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 2px;
+}
+.folder.active {
+  background-color: #6634dbd7;
+}
+.folder:hover {
+  transform: scale(1.02);
+  cursor: pointer;
+}
+
+
 .line_block {
   display: flex;
   height: 32px;
@@ -148,8 +180,9 @@ div svg:hover {
   position: absolute;
   left: 0;
   top: 0;
-  height: 500px;
   padding: 20px;
+  max-height: 520px;
+  overflow-y: auto;
 }
 .settings_sub a {
   cursor: pointer;
@@ -157,6 +190,12 @@ div svg:hover {
 .container{
   width: 80%;
 }
+
+.settings .fold.noselect {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .container form .form-row{
   margin-top: 20px;
   display: flex;
@@ -257,7 +296,6 @@ form .form-row .input-data{
   width: 30%;
   text-align: center;
 }
-
 
 #context_menu {
   position: absolute;

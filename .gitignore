@@ -1,5 +1,6 @@
 **/__pycache__/
 /env
+/.venv
 output
 TEMP
 TEMP_test
@@ -11,3 +12,4 @@ db*.sqlite3
 dev.json
 main.json
 tests/test_data/config.json
+text.txt

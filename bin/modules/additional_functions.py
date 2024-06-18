@@ -10,6 +10,7 @@ db = DBManager()
 lock = threading.Lock()
 
 
+# trash all
 def bot_upload(file_hash: str, chunks: list, bot: object):
     for chunk in chunks:
         chunk_path = f"{fm.split_chunks}/{chunk}"
