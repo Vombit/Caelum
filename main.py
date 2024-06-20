@@ -42,11 +42,11 @@ class Worker(QRunnable):
 
 
 class CallHandler(QObject):
+    """
+    Initialize the CallHandler class
+    with TelegramBot and DBManager instances.
+    """
     def __init__(self):
-        """
-        Initialize the CallHandler class
-        with TelegramBot and DBManager instances.
-        """
         self.thread_pool = QThreadPool()
         self.update_data_bots()
         super(CallHandler, self).__init__()
