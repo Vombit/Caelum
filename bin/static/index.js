@@ -34,7 +34,7 @@ window.add_item = function (msg, fsize) {
   div.appendChild(download);
 
   download.onclick = function() {
-    window.PyHandler.downloader(msg);
+    window.PyHandler.download(msg);
   };
 
   let itemsDiv = document.querySelector('.items');
