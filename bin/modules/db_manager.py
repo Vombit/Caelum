@@ -16,10 +16,11 @@ class DBManager:
                             file_name TEXT UNIQUE,
                             hash TEXT UNIQUE
                         )""")
-        try:
+
+        self.__cursor.execute("PRAGMA table_info(files)")
+        table_info = self.__cursor.fetchall()
+        if len([x for x in table_info if x[1] == 'file_filters']) == 0:
             self.__cursor.execute("""ALTER TABLE files ADD COLUMN file_filters TEXT""")
-        except sqlite3.OperationalError as e:
-            print(e)
 
         self.__cursor.execute("""CREATE TABLE IF NOT EXISTS
                         chunks (

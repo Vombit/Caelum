@@ -1,3 +1,5 @@
+const progressbar = document.querySelector(".progress");
+
 window.onload = function () {
   try {
     new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -43,7 +45,10 @@ window.add_item = function (msg, fsize) {
 // ###
 
 function clear_filters(folder) {
-  document.querySelector('.folder.active').classList.remove('active');
+  const folderElement = document.querySelector('.folders');
+  if (folderElement.querySelector('.folder.active')) {
+    folderElement.querySelector('.folder.active').classList.remove('active');
+  }
   folder.classList.add('active');
   window.PyHandler.start_page();
 }
@@ -53,7 +58,9 @@ function add_folder(name) {
   newFolder.className = 'folder';
   newFolder.textContent = name;
   newFolder.addEventListener('click', () => {
-    folderElement.querySelector('.folder.active').classList.remove('active');
+    if (folderElement.querySelector('.folder.active')) {
+      folderElement.querySelector('.folder.active').classList.remove('active');
+    }
     newFolder.classList.add('active');
     window.PyHandler.filtered_page(name)
   });
@@ -67,12 +74,14 @@ window.add_filters = function(filters_array) {
       folders.removeChild(elements[i]);
     }
   }
-
   filters_array.forEach((folder) => {
     add_folder(folder);
   });
 }
 
+const changeProgress = (progress) => {
+  progressbar.style.width = `${progress}%`;
+};
 
 
 
@@ -117,8 +126,6 @@ window.add_filters = function(filters_array) {
 
 
 
-
-const progressbar = document.querySelector(".progress");
 const popup = document.getElementById('popup');
 
 function update_token(id, arg) {
@@ -140,9 +147,6 @@ function show_hide_settings() {
   }
 }
 
-const changeProgress = (progress) => {
-  progressbar.style.width = `${progress}%`;
-};
 
 function openPopup(text) {
   var popupContent = document.querySelector('.popup-content');

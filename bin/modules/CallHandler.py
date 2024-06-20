@@ -1,98 +1,17 @@
-import os
+import threading
 import webbrowser
-from PyQt5.QtCore import QObject, pyqtSlot, QThreadPool, QThread, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSlot, QThreadPool, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 from bin.modules.file_manager import FileManager
-from bin.modules.telegram_bot import TelegramBot
 from bin.modules.db_manager import DBManager
+
+from bin.modules.downloader import Downloader
+from bin.modules.uploader import Uploader
 
 fm = FileManager()
 db = DBManager()
-
-from bin.modules.additional_functions import (
-    split_chunks,
-    bot_upload,
-    bot_download
-)
-
-
-import threading
 lock = threading.Lock()
-
-
-
-class UPLOADER(QThread):
-    counter = pyqtSignal(int)
-    def __init__(self, file_path):
-        QThread.__init__(self)
-        self.file_path = file_path
-        self.t_bots = []
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        for obj in db.get_bots():
-            bot = TelegramBot(obj[2], obj[3])
-            self.t_bots.append(bot)
-
-        file_hash = fm.get_file_hash(self.file_path)
-        filename = os.path.basename(self.file_path)
-        fm.process_file(self.file_path)
-        db.add_file(filename, file_hash)
-
-        split_chinks = split_chunks(fm.get_split_chunks(), len(self.t_bots))
-
-        threads = []
-        for i, chunks in enumerate(split_chinks):
-            my_thread = threading.Thread(
-                target=bot_upload, args=(file_hash, chunks, self.t_bots[i])
-            )
-            threads.append(my_thread)
-            my_thread.start()
-            self.counter.emit(i)
-
-        for thread in threads:
-            thread.join()
-
-
-class DOWNLOADER(QThread):
-    def __init__(self, filename):
-        QThread.__init__(self)
-        self.file_name = filename
-        self.t_bots = []
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        for obj in db.get_bots():
-            bot = TelegramBot(obj[2], obj[3])
-            self.t_bots.append(bot)
-
-        file_hash = db.get_file_by_name(self.file_name)[0][2]
-        chunks = db.get_chunks(file_hash)
-        split_chinks = split_chunks(chunks, len(self.t_bots))
-
-        threads = []
-        for i, chunks in enumerate(split_chinks):
-            my_thread = threading.Thread(
-                target=bot_download, args=(chunks, self.t_bots[i], self.t_bots)
-            )
-            threads.append(my_thread)
-            my_thread.start()
-
-        for thread in threads:
-            thread.join()
-
-        fm.merge_chunks(self.file_name, file_hash)
-
-
-
-
-
-
 
 
 class CallHandler(QObject):
@@ -156,12 +75,12 @@ class CallHandler(QObject):
             None, "Select File", "", "All Files (*)"
         )
         if file_path:
-            self.uploader = UPLOADER(file_path)
+            self.uploader = Uploader(file_path)
             self.uploader.start()
 
     @pyqtSlot(str)
     def download(self, filename: str) -> None:
-        self.downloader = DOWNLOADER(filename)
+        self.downloader = Downloader(filename)
         self.downloader.start()
 
 
@@ -192,14 +111,14 @@ class CallHandler(QObject):
 
 
 
-    @pyqtSlot(str, result=str)
-    def del_item(self, file_name: str) -> None:
-        main_file = db.get_file_by_name(file_name)
+    # @pyqtSlot(str, result=str)
+    # def del_item(self, file_name: str) -> None:
+    #     main_file = db.get_file_by_name(file_name)
 
-        db.del_file(main_file[0][1])
-        db.del_chunks(main_file[0][2])
+    #     db.del_file(main_file[0][1])
+    #     db.del_chunks(main_file[0][2])
 
-        self.load_data()
+    #     self.load_data()
 
     # @pyqtSlot()
     # def add_bot(self) -> None:
@@ -221,19 +140,6 @@ class CallHandler(QObject):
     # def settings_id(self, ids, arg):
     #     db.edit_bot("chat_id", arg, ids)
     #     self.update_data_bots()
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
