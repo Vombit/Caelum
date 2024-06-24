@@ -106,9 +106,8 @@ class CallHandler(QObject):
 
     @pyqtSlot(str, list)
     def popup_set_filters(self, file_name: str, filters_list: list) -> None:
-        db.get_filters_by_name(file_name, filters_list)
-
-
+        db.set_filters(file_name, filters_list)
+        self.load_data()
 
 
 

@@ -97,6 +97,7 @@ footer {
   
   height: 28px;
   line-height: 28px;
+  transition: 0.3s all;
 }
 .fold:hover {
   background-color: #6634db;
@@ -111,6 +112,7 @@ div svg {
   width: 30px;
   height: 30px;
   transition: transform 300ms ease-out;
+  transition: 0.3s all;
 }
 div svg:hover {
   width: 30px;
@@ -121,7 +123,7 @@ div svg:hover {
 .folds .line_block div svg {
   width: 22px;
   height: 27px;
-  transition: 0.5s;
+  transition: 0.3s all;
 }
 
 /* .folds .line_block div svg:hover {
@@ -140,6 +142,7 @@ div svg:hover {
   text-align: center;
   border-radius: 8px;
   padding: 2px;
+  transition: 0.2s all;
 }
 .folder.active {
   background-color: #6634dbd7;
@@ -249,6 +252,7 @@ form .form-row .input-data{
   position: relative;
   cursor: pointer;
   text-decoration: none;
+  transition: 0.3s all;
 }
 .url-underline:hover:after {
   content: "";
@@ -308,6 +312,7 @@ form .form-row .input-data{
   transition: transform 300ms ease-out;
   border-radius: 8px;
   padding: 0px 10px;
+  transition: 0.2s all;
 }
 #context_menu div:hover {
   background-color: #6634db;
@@ -380,40 +385,36 @@ align-items: center;
 margin: 10px 0;
 }
 
-
+.popup_filename {
+  padding: 12px;
+  word-wrap: break-word;
+}
 
 
 .content ul {
-display: flex;
-flex-wrap: wrap;
-padding: 7px;
-margin: 12px 0;
-border-radius: 5px;
-border: 1px solid #a6a6a6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  margin: 12px 0;
+  border-radius: 5px;
+  border: 1px solid #a6a6a6;
 }
 
 .content ul li {
-  color: #333;
+  color: #fff;
   margin: 4px 3px;
   list-style: none;
-  border-radius: 5px;
-  background: #F2F2F2;
-  padding: 5px 8px 5px 10px;
-  border: 1px solid #e3e1e1;
+  border-radius: 8px;
+  background: #6634db;
+  padding: 2px 5px;
+  transition: 0.3s all;
 }
 
-.content ul li strong {
-height: 24px;
-width: 24px;
-color: #fff;
-margin-left: 8px;
-font-size: 14px;
-margin-top: 0px;
-cursor: pointer;
-border-radius: 50%;
-background: #ab2929;
-justify-content: center;
-line-height: 24px;
+.content ul li:hover {
+  transform: scale(0.95);
+  cursor: pointer;
 }
 
 .content ul input {
@@ -422,6 +423,7 @@ line-height: 24px;
   border: none;
   outline: none;
   font-size: 16px;
+  border-radius: 8px;
 }
 
 

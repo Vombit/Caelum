@@ -183,9 +183,9 @@ class DBManager:
 
     def set_filters(self, file_name: str, filters: list) -> None:
         filters_to_str = ', '.join(map(str, filters))
-
         self.__cursor.execute(
-            f"UPDATE files SET file_filters = {filters_to_str} WHERE file_name = {file_name}"
+            "UPDATE files SET file_filters = ? WHERE file_name = ?",
+            (filters_to_str, file_name)
         )
         self.__conn.commit()
 
