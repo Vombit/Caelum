@@ -43,7 +43,7 @@
           </svg>
       </div>
       <div class="version noselect">
-        v 1.1.0
+        v 1.5.0
       </div>
       <div class="line_block">
         <div onclick="window.PyHandler.open_donation()" class="bymecoffee" title="By me coffee">
@@ -92,13 +92,8 @@
         </svg>
       </div>
     </div>
-    <!-- |||  -->
-    <div id="popup" class="popup">
-      <div class="popup-content">
-      </div>
-    </div>
-    <!-- |||  -->
     </footer>
+
     <!-- |||  -->
     <div class="settings" style="display: none;">
       <h2 class="noselect">Settings</h2>
@@ -119,12 +114,21 @@
     </div>
     <!-- |||  -->
 
-    <!-- <div class="context_menu" style="display: none;">
-      <h2 class="">filename</h2>
-      
-    </div> -->
 
-    
+    <div class="popup__bg">
+      <div class="popup">
+        <div class="popup_filename">filename</div>
+        <h2>Tags</h2>
+        <div class="content">
+          <p>Press enter or add a comma after each tag (max 10)</p>
+          <ul><input type="text" spellcheck="false"></ul>
+        </div>
+        <div class="delete fold noselect">
+          delete
+        </div>
+      </div>
+    </div>
+
     <script src="static/index.js"></script>
   </body>
 </html>

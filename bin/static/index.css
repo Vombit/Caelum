@@ -276,7 +276,7 @@ form .form-row .input-data{
   transition: width 2s ease;
 }
 
-.popup {
+/* .popup {
   display: none;
   position: fixed;
   z-index: 1;
@@ -286,16 +286,16 @@ form .form-row .input-data{
   height: 90%;
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.6);
-}
+} */
 
-.popup-content {
+/* .popup-content {
   border-radius: 8px;
   background-color: #242424;
   margin: 22% auto;
   padding: 30px;
   width: 30%;
   text-align: center;
-}
+} */
 
 #context_menu {
   position: absolute;
@@ -314,3 +314,114 @@ form .form-row .input-data{
   transform: scale(1.02);
   cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.popup__bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.5s all;
+}
+
+.popup__bg.active {
+  opacity: 1;
+  pointer-events: all;
+  transition: 0.5s all;
+}
+
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: #111;
+  width: 400px;
+  border-radius: 10px;
+  padding: 18px 25px 20px;
+  transition: 0.5s all;
+}
+
+.popup.active {
+  transform: translate(-50%, -50%) scale(1);
+  transition: 0.5s all;
+}
+
+.popup :where(.title, li, li strong){
+display: flex;
+align-items: center;
+}
+
+.popup .content {
+margin: 10px 0;
+}
+
+
+
+
+.content ul {
+display: flex;
+flex-wrap: wrap;
+padding: 7px;
+margin: 12px 0;
+border-radius: 5px;
+border: 1px solid #a6a6a6;
+}
+
+.content ul li {
+  color: #333;
+  margin: 4px 3px;
+  list-style: none;
+  border-radius: 5px;
+  background: #F2F2F2;
+  padding: 5px 8px 5px 10px;
+  border: 1px solid #e3e1e1;
+}
+
+.content ul li strong {
+height: 24px;
+width: 24px;
+color: #fff;
+margin-left: 8px;
+font-size: 14px;
+margin-top: 0px;
+cursor: pointer;
+border-radius: 50%;
+background: #ab2929;
+justify-content: center;
+line-height: 24px;
+}
+
+.content ul input {
+  flex: 1;
+  padding: 5px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+

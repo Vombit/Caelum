@@ -181,6 +181,14 @@ class DBManager:
         return self.__cursor.fetchall()
 
 
+    def set_filters(self, file_name: str, filters: list) -> None:
+        filters_to_str = ', '.join(map(str, filters))
+
+        self.__cursor.execute(
+            f"UPDATE files SET file_filters = {filters_to_str} WHERE file_name = {file_name}"
+        )
+        self.__conn.commit()
+
     def get_filters(self) -> list:
         self.__cursor.execute('SELECT file_filters FROM files')
         filters_list = []
@@ -190,6 +198,18 @@ class DBManager:
                 filters_list.extend(filters)
 
         unique_filters = sorted(set(filters_list))
+
+        return unique_filters
+
+    def get_filters_by_name(self, filename: str) -> list:
+        self.__cursor.execute(f"SELECT file_filters FROM files where file_name='{filename}'")
+        filters_list = []
+        for row in self.__cursor.fetchall():
+            if row is not None:
+                filters = row[0].split(', ') if row[0] else []
+                filters_list.extend(filters)
+
+        unique_filters = filters_list
 
         return unique_filters
 

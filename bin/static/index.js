@@ -126,7 +126,16 @@ const changeProgress = (progress) => {
 
 
 
-const popup = document.getElementById('popup');
+
+
+
+
+
+
+
+
+
+
 
 function update_token(id, arg) {
   window.PyHandler.settings_token(id, arg)
@@ -147,47 +156,6 @@ function show_hide_settings() {
   }
 }
 
-
-function openPopup(text) {
-  var popupContent = document.querySelector('.popup-content');
-  popupContent.innerHTML = text;
-  popup.style.display = 'block';
-}
-
-function closePopup() {
-  document.getElementById('popup').style.display = 'none';
-}
-
-
-function context_menu_creator(e) {
-  var context = document.createElement('div');
-  var filenameElement = e.target.parentElement.getElementsByClassName('filename')[0];
-  context.id = "context_menu";
-  console.log(filenameElement)
-  context.innerHTML = `
-      <div onclick="window.PyHandler.del_item('${filenameElement.innerText}')">delete</div>
-      `;
-  context.style.top = e.y + 'px';
-  context.style.left = e.x + 'px';
-  document.getElementsByTagName("body")[0].appendChild(context);
-}
-
-document.addEventListener("contextmenu", function(e) {
-  if (e.target.parentElement.className == 'item') {
-      if (!document.getElementById("context_menu")) {
-          context_menu_creator(e)
-      } else {
-          document.getElementById("context_menu").remove();
-          context_menu_creator(e)
-      }
-  }
-  window.event.returnValue = false;
-}, false);
-document.addEventListener("click", function(e) {
-  if (e.target.id != "context_menu" && document.getElementById("context_menu")) {
-      document.getElementById("context_menu").remove();
-  }
-});
 
 function addBotLine(id=null, bot_token=null, chat_token=null) {
   var container = document.createElement('div');
@@ -244,3 +212,144 @@ function addBotLine(id=null, bot_token=null, chat_token=null) {
 }
 
 var block_settings = document.querySelector('.settings form');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let popupBg = document.querySelector('.popup__bg');
+let popup = document.querySelector('.popup');
+
+
+
+
+const ul = document.querySelector("ul");
+const input = document.querySelector("input");
+
+let maxTags = 10;
+let tags = [];
+
+function createTag() {
+  ul.querySelectorAll("li").forEach(li => li.remove());
+  tags.slice().reverse().forEach(tag => {
+    let liTag = `<li>${tag} <strong class="uit uit-multiply" onclick="remove(this, '${tag}')">✖</strong></li>`;  
+    ul.insertAdjacentHTML("afterbegin", liTag);
+  });
+}
+function remove(element, tag) {
+  let index = tags.indexOf(tag);
+  tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+  element.parentElement.remove();
+}
+function addTag(e) {
+  if (e.key == "Enter") {
+    let tag = e.target.value.replace(/\s+/g, ' ');
+    if (tag.length > 1 && !tags.includes(tag)) {
+      if (tags.length < 10) {
+        tag.split(',').forEach(tag => {
+          tags.push(tag);
+          createTag();
+        });
+      }
+    }
+    e.target.value = "";
+  }
+}
+input.addEventListener("keyup", addTag);
+
+
+function popup_menu_creator(e) {
+  let filename = e.getElementsByClassName('filename')[0];
+  let filename_text = filename.innerText;
+
+  var popup_filename = popup.querySelector('.popup_filename');
+  popup_filename.textContent = filename_text
+
+  var delete_file = popup.querySelector('.delete.fold');
+  delete_file.onclick = function() {
+    window.PyHandler.del_item(filename_text)
+    popupBg.classList.remove('active');
+    popup.classList.remove('active');
+  }
+
+  window.PyHandler.popup_get_filters(filename_text)
+}
+
+document.addEventListener('mousedown', (e) => {
+  if (e.target.parentElement.className == 'item' && e.button == 2) {
+    e.preventDefault();
+    popupBg.classList.add('active');
+    popup.classList.add('active');
+
+    popup_menu_creator(e.target.parentElement)
+
+  }
+})
+
+document.addEventListener('click', (e) => {
+  if (e.target === popupBg) {
+    popupBg.classList.remove('active');
+    popup.classList.remove('active');
+  }
+});

@@ -76,12 +76,51 @@ class CallHandler(QObject):
         )
         if file_path:
             self.uploader = Uploader(file_path)
+            self.uploader.finished.connect(self.load_data)
             self.uploader.start()
+
 
     @pyqtSlot(str)
     def download(self, filename: str) -> None:
         self.downloader = Downloader(filename)
         self.downloader.start()
+
+    @pyqtSlot(str)
+    def del_item(self, file_name: str) -> None:
+        main_file = db.get_file_by_name(file_name)
+
+        db.del_file(main_file[0][1])
+        db.del_chunks(main_file[0][2])
+
+        self.load_data()
+
+    # some problem return undefined (js func popup_menu_creator)
+    @pyqtSlot(str, result=list)
+    def popup_get_filters(self, filename: str) -> list:
+        file_tags = db.get_filters_by_name(filename)
+
+        self.view.page().runJavaScript(f"tags = {list(file_tags)}")
+        self.view.page().runJavaScript("createTag()")
+
+        return list(file_tags)
+
+    @pyqtSlot(str, list)
+    def popup_set_filters(self, file_name: str, filters_list: list) -> None:
+        db.get_filters_by_name(file_name, filters_list)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -111,14 +150,6 @@ class CallHandler(QObject):
 
 
 
-    # @pyqtSlot(str, result=str)
-    # def del_item(self, file_name: str) -> None:
-    #     main_file = db.get_file_by_name(file_name)
-
-    #     db.del_file(main_file[0][1])
-    #     db.del_chunks(main_file[0][2])
-
-    #     self.load_data()
 
     # @pyqtSlot()
     # def add_bot(self) -> None:
