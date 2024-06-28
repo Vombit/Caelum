@@ -17,6 +17,11 @@ class DBManager:
                             hash TEXT UNIQUE
                         )""")
 
+        self.__cursor.execute("PRAGMA table_info(files)")
+        table_info = self.__cursor.fetchall()
+        if len([x for x in table_info if x[1] == 'file_filters']) == 0:
+            self.__cursor.execute("""ALTER TABLE files ADD COLUMN file_filters TEXT""")
+
         self.__cursor.execute("""CREATE TABLE IF NOT EXISTS
                         chunks (
                             id INTEGER PRIMARY KEY,
@@ -140,18 +145,13 @@ class DBManager:
     def edit_chunk(self) -> None:
         """Not implemented"""
 
-    def edit_bot(self, name: str, token: str, ids: int) -> None:
+    def edit_bot(self, bot: dict) -> None:
+        query = """
+            UPDATE bot_settings
+            SET chat_id = ?, bot_token = ?
+            WHERE id = ?
         """
-        Edit the bot settings.
-
-        Args:
-            name (str): The name of the setting to edit ('domain', 'bot_token' or 'chat_id').
-            token (str): The new value for the setting.
-            ids (int): The 'id' in table.
-        """
-        self.__cursor.execute(
-            f"UPDATE bot_settings SET {name} = ? WHERE id = {ids}", (str(token),)
-        )
+        self.__cursor.execute(query, (bot['chat_id'], bot['token'], bot['id']))
         self.__conn.commit()
 
     def get_files(self) -> list:
@@ -174,6 +174,45 @@ class DBManager:
         self.__cursor.execute(f"SELECT * FROM files WHERE file_name = '{name}'")
 
         return self.__cursor.fetchall()
+
+
+    def set_filters(self, file_name: str, filters: list) -> None:
+        filters_to_str = ', '.join(map(str, filters))
+        self.__cursor.execute(
+            "UPDATE files SET file_filters = ? WHERE file_name = ?",
+            (filters_to_str, file_name)
+        )
+        self.__conn.commit()
+
+    def get_filters(self) -> list:
+        self.__cursor.execute('SELECT file_filters FROM files')
+        filters_list = []
+        for row in self.__cursor.fetchall():
+            if row is not None:
+                filters = row[0].split(', ') if row[0] else []
+                filters_list.extend(filters)
+
+        unique_filters = sorted(set(filters_list))
+
+        return unique_filters
+
+    def get_filters_by_name(self, filename: str) -> list:
+        self.__cursor.execute(f"SELECT file_filters FROM files where file_name='{filename}'")
+        filters_list = []
+        for row in self.__cursor.fetchall():
+            if row is not None:
+                filters = row[0].split(', ') if row[0] else []
+                filters_list.extend(filters)
+
+        unique_filters = filters_list
+
+        return unique_filters
+
+    def get_filter_files(self, filter: str) -> list:
+        self.__cursor.execute(f"SELECT * FROM files WHERE file_filters GLOB '*{filter}*';")
+
+        return self.__cursor.fetchall()
+
 
     def get_chunk(self, file_hash: str) -> str:
         """

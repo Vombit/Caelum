@@ -25,7 +25,7 @@ body {
 main {
   display: grid;
   grid-template-columns: 230px auto;
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
 }
 .items {
   display: grid;
@@ -82,6 +82,8 @@ footer {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  position: absolute;
+  z-index: 10;
 }
 .folds {
   padding: 10px;
@@ -97,6 +99,7 @@ footer {
   
   height: 28px;
   line-height: 28px;
+  transition: 0.3s all;
 }
 .fold:hover {
   background-color: #6634db;
@@ -107,22 +110,56 @@ footer div {
   height: 32px;
   line-height: 32px;
 }
-div svg {
-  width: 32px;
-  height: 32px;
+div img {
+  width: 30px;
+  height: 30px;
   transition: transform 300ms ease-out;
+  transition: 0.3s all;
 }
-div svg:hover {
-  width: 32px;
-  height: 32px;
+div img:hover {
+  width: 30px;
+  height: 30px;
   transform: scale(1.1);
   cursor: pointer;
 }
+.folds .line_block div img {
+  width: 22px;
+  height: 27px;
+  transition: 0.3s all;
+}
+
+/* .folds .line_block div img:hover {
+  transform: rotate(120deg)
+} */
+
+.folders {
+  margin-top: 15px;
+  height: 475px;
+  overflow-y: auto;
+}
+
+.folder {
+  background-color: #55555571;
+  margin: 5px;
+  text-align: center;
+  border-radius: 8px;
+  padding: 2px;
+  transition: 0.2s all;
+}
+.folder.active {
+  background-color: #6634dbd7;
+}
+.folder:hover {
+  transform: scale(1.02);
+  cursor: pointer;
+}
+
+
 .line_block {
   display: flex;
   height: 32px;
 }
-.line_block div svg {
+.line_block div img {
   margin-left: 12px;
 }
 .empt_files {
@@ -148,15 +185,42 @@ div svg:hover {
   position: absolute;
   left: 0;
   top: 0;
-  height: 500px;
   padding: 20px;
+  height: 520px;
+  overflow-y: auto;
+  display: flex;
+  transition: 0.5s all;
+  z-index: 9;
 }
+
+@keyframes slideFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.settings.hide {
+  top: 100%;
+  transition: 0.5s all;
+}
+
 .settings_sub a {
   cursor: pointer;
 }
 .container{
   width: 80%;
 }
+
+.settings .fold.noselect {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .container form .form-row{
   margin-top: 20px;
   display: flex;
@@ -210,6 +274,7 @@ form .form-row .input-data{
   position: relative;
   cursor: pointer;
   text-decoration: none;
+  transition: 0.3s all;
 }
 .url-underline:hover:after {
   content: "";
@@ -237,28 +302,6 @@ form .form-row .input-data{
   transition: width 2s ease;
 }
 
-.popup {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 90%;
-  overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-
-.popup-content {
-  border-radius: 8px;
-  background-color: #242424;
-  margin: 22% auto;
-  padding: 30px;
-  width: 30%;
-  text-align: center;
-}
-
-
 #context_menu {
   position: absolute;
 }
@@ -270,9 +313,101 @@ form .form-row .input-data{
   transition: transform 300ms ease-out;
   border-radius: 8px;
   padding: 0px 10px;
+  transition: 0.2s all;
 }
 #context_menu div:hover {
   background-color: #6634db;
   transform: scale(1.02);
   cursor: pointer;
 }
+
+.popup__bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.5s all;
+}
+
+.popup__bg.active {
+  opacity: 1;
+  pointer-events: all;
+  transition: 0.5s all;
+}
+
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: #111;
+  width: 400px;
+  border-radius: 10px;
+  padding: 18px 25px 20px;
+  transition: 0.5s all;
+}
+
+.popup.active {
+  transform: translate(-50%, -50%) scale(1);
+  transition: 0.5s all;
+}
+
+.popup :where(.title, li, li strong){
+display: flex;
+align-items: center;
+}
+
+.popup .content {
+margin: 10px 0;
+}
+
+.popup_filename {
+  padding: 12px;
+  word-wrap: break-word;
+}
+
+
+.content ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  margin: 12px 0;
+  border-radius: 5px;
+  border: 1px solid #a6a6a6;
+}
+
+.content ul li {
+  color: #fff;
+  margin: 4px 3px;
+  list-style: none;
+  border-radius: 8px;
+  background: #6634db;
+  padding: 2px 5px;
+  transition: 0.3s all;
+}
+
+.content ul li:hover {
+  transform: scale(0.95);
+  cursor: pointer;
+}
+
+.content ul input {
+  flex: 1;
+  padding: 5px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+
+
+
+
+

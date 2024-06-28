@@ -12,3 +12,4 @@ dev.json
 main.json
 tests/test_data/config.json
 tests/test_data/test.sqlite3
+text.txt

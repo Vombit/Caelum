@@ -1,5 +1,5 @@
 const progressbar = document.querySelector(".progress");
-const popup = document.getElementById('popup');
+const block_settings = document.querySelector('.settings form');
 
 window.onload = function () {
   try {
@@ -10,10 +10,11 @@ window.onload = function () {
     window.console.log(e)
   }
   setTimeout(function () {
-    window.PyHandler.load()
-  }, 500);
+    window.PyHandler.load_data()
+  }, 250);
 }
 
+// rewrite this
 window.add_item = function (msg, fsize) {
   let div = document.createElement('div');
   div.className = 'item';
@@ -21,6 +22,7 @@ window.add_item = function (msg, fsize) {
   let filename = document.createElement('div');
   filename.className = 'filename';
   filename.textContent = msg;
+  filename.title = msg;
 
   let download = document.createElement('div');
   download.className = 'btn_download noselect';
@@ -35,75 +37,174 @@ window.add_item = function (msg, fsize) {
   div.appendChild(download);
 
   download.onclick = function() {
-    window.PyHandler.downloader(msg);
+    window.PyHandler.download(msg);
   };
 
   let itemsDiv = document.querySelector('.items');
   itemsDiv.appendChild(div);
 }
-function update_token(id, arg) {
-  window.PyHandler.settings_token(id, arg)
-}
-function update_id(id, arg) {
-  window.PyHandler.settings_id(id, arg)
-}
-function remove_bot(id) {
-  window.PyHandler.remove_bot(id)
-}
-function show_hide_settings() {
-  var block_settings = document.querySelector('.settings');
-  
-  if (block_settings.style.display === "none") {
-    block_settings.style.display = "flex";
-  }else {
-    block_settings.style.display = "none";
+// ###
+
+function clear_filters(folder) {
+  const folderElement = document.querySelector('.folders');
+  if (folderElement.querySelector('.folder.active')) {
+    folderElement.querySelector('.folder.active').classList.remove('active');
   }
+  folder.classList.add('active');
+  window.PyHandler.start_page();
+}
+function add_folder(name) {
+  const folderElement = document.querySelector('.folders');
+  let newFolder = document.createElement('div');
+  newFolder.className = 'folder';
+  newFolder.textContent = name;
+  newFolder.addEventListener('click', () => {
+    if (folderElement.querySelector('.folder.active')) {
+      folderElement.querySelector('.folder.active').classList.remove('active');
+    }
+    newFolder.classList.add('active');
+    window.PyHandler.filtered_page(name)
+  });
+  folderElement.appendChild(newFolder);
+}
+window.add_filters = function(filters_array) {
+  var folders = document.querySelector('.folders');
+  var elements = folders.querySelectorAll('.folder');
+  if (elements.length >= 3) {
+    for (var i = 2; i < elements.length; i++) {
+      folders.removeChild(elements[i]);
+    }
+  }
+  filters_array.forEach((folder) => {
+    add_folder(folder);
+  });
 }
 
 const changeProgress = (progress) => {
   progressbar.style.width = `${progress}%`;
 };
 
-function openPopup(text) {
-  var popupContent = document.querySelector('.popup-content');
-  popupContent.innerHTML = text;
-  popup.style.display = 'block';
+
+let popupBg = document.querySelector('.popup__bg');
+let popup = document.querySelector('.popup');
+
+const ul = document.querySelector("ul");
+const input = document.querySelector("input");
+
+let maxTags = 10;
+let tags = [];
+
+function createTag() {
+  ul.querySelectorAll("li").forEach(li => li.remove());
+  tags.slice().reverse().forEach(tag => {
+    let liTag = `<li onclick="remove(this, '${tag}')">${tag}</li>`;
+    ul.insertAdjacentHTML("afterbegin", liTag);
+  });
 }
-
-function closePopup() {
-  document.getElementById('popup').style.display = 'none';
+function remove(element, tag) {
+  let index = tags.indexOf(tag);
+  tags = [...tags.slice(0, index), ...tags.slice(index + 1)];
+  element.remove();
 }
-
-
-function context_menu_creator(e) {
-  var context = document.createElement('div');
-  var filenameElement = e.target.parentElement.getElementsByClassName('filename')[0];
-  context.id = "context_menu";
-  console.log(filenameElement)
-  context.innerHTML = `
-      <div onclick="window.PyHandler.del_item('${filenameElement.innerText}')">delete</div>
-      `;
-  context.style.top = e.y + 'px';
-  context.style.left = e.x + 'px';
-  document.getElementsByTagName("body")[0].appendChild(context);
-}
-
-document.addEventListener("contextmenu", function(e) {
-  if (e.target.parentElement.className == 'item') {
-      if (!document.getElementById("context_menu")) {
-          context_menu_creator(e)
-      } else {
-          document.getElementById("context_menu").remove();
-          context_menu_creator(e)
+function addTag(e) {
+  if (e.key == "Enter") {
+    let tag = e.target.value.replace(/\s+/g, ' ');
+    if (tag.length > 1 && !tags.includes(tag)) {
+      if (tags.length < 10) {
+        tag.split(',').forEach(tag => {
+          tags.push(tag);
+          createTag();
+        });
       }
+    }
+    e.target.value = "";
   }
-  window.event.returnValue = false;
-}, false);
-document.addEventListener("click", function(e) {
-  if (e.target.id != "context_menu" && document.getElementById("context_menu")) {
-      document.getElementById("context_menu").remove();
+}
+input.addEventListener("keyup", addTag);
+
+function popup_menu_creator(e) {
+  let filename = e.getElementsByClassName('filename')[0];
+  let filename_text = filename.innerText;
+
+  var popup_filename = popup.querySelector('.popup_filename');
+  popup_filename.textContent = filename_text
+
+  var delete_file = popup.querySelector('.delete.fold');
+  delete_file.onclick = function() {
+    window.PyHandler.del_item(filename_text)
+    popupBg.classList.remove('active');
+    popup.classList.remove('active');
+  }
+
+  window.PyHandler.popup_get_filters(filename_text)
+}
+
+document.addEventListener('mousedown', (e) => {
+  if (e.target.parentElement.className == 'item' && e.button == 2) {
+    e.preventDefault();
+    popupBg.classList.add('active');
+    popup.classList.add('active');
+
+    popup_menu_creator(e.target.parentElement)
+
+  }
+})
+
+document.addEventListener('click', (e) => {
+  if (e.target === popupBg) {
+    popupBg.classList.remove('active');
+    popup.classList.remove('active');
+
+    var popup_filename = popup.querySelector('.popup_filename');
+    window.PyHandler.popup_set_filters(popup_filename.innerText, tags)
   }
 });
+
+function show_hide_settings() {
+  var blockSettings = document.querySelector('.settings');
+
+  if (blockSettings.classList.contains('hide')) {
+    blockSettings.classList.remove('hide');
+    blockSettings.style.animation = 'slideFromBottom 0.5s forwards';
+
+    window.PyHandler.get_bots()
+  } else {
+    blockSettings.style.animation = 'slideFromBottom 0.5s reverse';
+    blockSettings.classList.add('hide');
+
+    window.PyHandler.set_bots(bots)
+  }
+}
+
+
+var bots = []
+
+function createBots() {
+  block_settings.innerHTML = '';
+  bots.slice().forEach(bot => {
+
+    block_settings.appendChild(addBotLine(bot.id, bot.token, bot.chat_id))
+  });
+}
+
+function update_token(id, token) {
+  for (let i = 0; i < bots.length; i++) {
+    if (bots[i].id == id) {
+      bots[i].token = token;
+      break;
+    }
+  }
+}
+
+function update_id(id, chat_id) {
+  for (let i = 0; i < bots.length; i++) {
+    if (bots[i].id == id) {
+      bots[i].chat_id = chat_id;
+      break;
+    }
+  }
+}
+
 
 function addBotLine(id=null, bot_token=null, chat_token=null) {
   var container = document.createElement('div');
@@ -138,7 +239,7 @@ function addBotLine(id=null, bot_token=null, chat_token=null) {
 
   var deleteButton = document.createElement('div');
   deleteButton.title = 'Remove';
-  deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#E7E9E9"></svg>';
+  deleteButton.innerHTML = "<img src='static\\icons\\delete.svg' />";
   deleteButton.addEventListener('click', (event) => remove_bot(id));
 
 
@@ -159,4 +260,7 @@ function addBotLine(id=null, bot_token=null, chat_token=null) {
   return container;
 }
 
-var block_settings = document.querySelector('.settings form');
+
+function remove_bot(id) {
+  window.PyHandler.remove_bot(id)
+}
