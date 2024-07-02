@@ -137,9 +137,7 @@ class CallHandler(QObject):
     #     view.page().runJavaScript("closePopup()")
 
 
-    # t(self.get_thread.terminate) вырубить поток
-
-
+    # some problem
     @pyqtSlot()
     def add_bot(self) -> None:
         new_bot = db.add_bot()

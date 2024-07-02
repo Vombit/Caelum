@@ -1,5 +1,5 @@
 **/__pycache__/
-/env
+/.venv
 output
 TEMP
 TEMP_test

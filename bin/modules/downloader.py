@@ -1,15 +1,38 @@
 import threading
+import os
 from PyQt5.QtCore import QThread
 from bin.modules.telegram_bot import TelegramBot
 from bin.modules.file_manager import FileManager
 from bin.modules.db_manager import DBManager
-from bin.modules.additional_functions import (
-    split_chunks,
-    bot_download
+from bin.modules.utils import (
+    split_chunks
 )
 
 db = DBManager()
 fm = FileManager()
+lock = threading.Lock()
+
+
+def bot_download(chunks: list, bot: object, bots):
+    for chunk in chunks:
+        path_chunk = f"{fm.loaded_chunks}/{chunk[1]}_{chunk[3]}"
+
+        if os.path.isfile(path_chunk):
+            hash = fm.get_file_hash(path_chunk)
+            if chunk[1] == hash:
+                continue
+
+        loaded_file = bot.download_document(chunk[4])
+        if not loaded_file:
+            for bot in bots:
+                loaded_file = bot.download_document(chunk[4])
+                if loaded_file:
+                    break
+
+        # print(loaded_file)
+        # Save the chunk to a file and remove it when done
+        with open(path_chunk, "wb") as new_file:
+            new_file.write(loaded_file)
 
 
 class Downloader(QThread):

@@ -7,8 +7,8 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtGui import QIcon
 
 from bin.modules.CallHandler import CallHandler
-from bin.modules.additional_functions import (
-    resource_path,
+from bin.modules.utils import (
+    resource_path
 )
 
 
@@ -19,7 +19,7 @@ class WebEngine(QWebEngineView):
         self.setContextMenuPolicy(Qt.NoContextMenu)
         self.setWindowTitle("Caelum")
         self.setFixedSize(1000, 620)
-        self.setWindowIcon(QIcon("./bin/icon.ico"))
+        self.setWindowIcon(QIcon(resource_path("bin/icon.ico")))
 
     def close_event(self, evt):
         """Override close event to clear http cache before closing application
