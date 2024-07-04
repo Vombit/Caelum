@@ -259,8 +259,20 @@ function addBotLine(id=null, bot_token=null, chat_token=null) {
 
   return container;
 }
-
-
 function remove_bot(id) {
   window.PyHandler.remove_bot(id)
+}
+
+
+function toggleNotification() {
+  let element = document.getElementsByClassName('notification');
+  if (element.classList.contains('hidden')) {
+    element.classList.remove('hidden');
+  } else {
+    element.classList.add('hidden');
+  }
+}
+function setText(text) {
+  let element = document.getElementsByClassName('notification');
+  element.textContent = text;
 }

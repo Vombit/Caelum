@@ -16,6 +16,7 @@ def resource_path(relative_path: str) -> str:
 
     return os.path.join(base_path, relative_path)
 
+
 def split_chunks(file_list: list, num_threads: int) -> list:
     """
     Get the absolute path to the resource,
