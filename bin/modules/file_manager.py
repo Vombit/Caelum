@@ -40,25 +40,18 @@ class FileManager:
 
         Return: An MD5 hash string of the file content.
         """
-        print('начало получения хэша')
         block_size = 1024 * 1024  # 1 megabyte
         hash_md5 = hashlib.md5()
-        # with open(file_path, "rb") as f:
-        #     for chunk in iter(lambda: f.read(4096), b""):
-        #         hash_md5.update(chunk)
-        
-        #     with open('big_file.dat', 'rb') as file:
-        # md5_hash = hashlib.md5()
-        # for chunk in iter(lambda: file.read(4096), b''):
-        #     md5_hash.update(chunk)
-        
+
         with open(file_path, "rb") as f:
             block = f.read(block_size)
             while block:
                 hash_md5.update(block)
                 block = f.read(block_size)
-        print('конец получения хэша')
         return hash_md5.hexdigest()
+
+    def get_file_size(self, file_path: str) -> int:
+        return os.path.getsize(file_path)
 
     def merge_chunks(self, filename: str, filehash: str, filepath=None) -> None:
         """

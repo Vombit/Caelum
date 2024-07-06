@@ -40,6 +40,7 @@ class Downloader(QThread):
         QThread.__init__(self)
         self.file_name = filename
         self.t_bots = []
+        self.view = None
 
     def __del__(self):
         self.wait()

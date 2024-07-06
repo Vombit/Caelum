@@ -68,6 +68,7 @@ class CallHandler(QObject):
         )
         if file_path:
             self.uploader = Uploader(file_path)
+            self.uploader.view = self.view
             self.uploader.finished.connect(self.load_data)
             self.uploader.start()
 
@@ -75,12 +76,12 @@ class CallHandler(QObject):
     @pyqtSlot(str)
     def download(self, filename: str) -> None:
         self.downloader = Downloader(filename)
+        self.downloader.view = self.view
         self.downloader.start()
 
     @pyqtSlot(str)
     def del_item(self, file_name: str) -> None:
         main_file = db.get_file_by_name(file_name)
-
         db.del_file(main_file[0][1])
         db.del_chunks(main_file[0][2])
 
@@ -127,16 +128,6 @@ class CallHandler(QObject):
         db.del_bot(bot_id)
         self.get_bots()
 
-
-
-
-    # @staticmethod
-    # def popup_message(self, message):
-    #     view.page().runJavaScript(f"openPopup('{message}')")
-    #     time.sleep(3)
-    #     view.page().runJavaScript("closePopup()")
-
-
     # some problem
     @pyqtSlot()
     def add_bot(self) -> None:
@@ -144,7 +135,6 @@ class CallHandler(QObject):
         self.view.page().runJavaScript(
             f'block_settings.appendChild(addBotLine("{new_bot}", "NULL", "NULL"));'
         )
-
 
     @pyqtSlot()
     def open_git(self) -> None:

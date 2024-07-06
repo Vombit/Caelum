@@ -57,7 +57,7 @@ class TelegramBot:
             "chat_id": self.chat_id,
         }
         # data = {"chat_id": str(self.chat_id), "document": (open(file_path, "rb"))}
-        response = requests.post(url, files=files, data=data, timeout=120, verify=False)
+        response = requests.post(url, files=files, data=data, timeout=120)
         for _ in range(10):
             try:
                 if response.status_code == 200:
@@ -70,7 +70,8 @@ class TelegramBot:
                 print(response.status_code)
                 print(response.json())
 
-            response = requests.post(url, files=files, data=data, timeout=120, verify=False)
+            # response = requests.post(url, files=files, data=data, timeout=120, verify=False)
+            response = requests.post(url, files=files, data=data, timeout=120)
         else:
             return ""
 

@@ -47,6 +47,7 @@ main {
   align-items: center;
 }
 .item .filename {
+  white-space:break-spaces;
   word-break: break-all;
   padding: 5px;
   overflow: hidden;
@@ -346,6 +347,7 @@ margin: 10px 0;
 }
 .popup_filename {
   padding: 12px;
+  white-space:break-spaces;
   word-wrap: break-word;
 }
 .content ul {

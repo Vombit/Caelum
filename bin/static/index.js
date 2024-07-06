@@ -265,7 +265,7 @@ function remove_bot(id) {
 
 
 function toggleNotification() {
-  let element = document.getElementsByClassName('notification');
+  let element = document.getElementById('notification');
   if (element.classList.contains('hidden')) {
     element.classList.remove('hidden');
   } else {
@@ -273,6 +273,7 @@ function toggleNotification() {
   }
 }
 function setText(text) {
-  let element = document.getElementsByClassName('notification');
-  element.textContent = text;
+  let element = document.getElementById('notification');
+  let child = element.children[0];
+  child.textContent = text;
 }

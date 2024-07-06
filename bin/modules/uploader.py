@@ -38,15 +38,6 @@ def bot_upload(file_hash: str, chunks: list, bot: object):
     print(f'chunks deleted for bot:{bot.bot_token}')
 
 
-
-
-
-
-
-
-
-
-
 class Uploader(QThread):
     counter = pyqtSignal(int)
 
@@ -54,11 +45,15 @@ class Uploader(QThread):
         QThread.__init__(self)
         self.file_path = file_path
         self.t_bots = []
+        self.view = None
 
     def __del__(self):
         self.wait()
 
     def run(self):
+        self.view.page().runJavaScript(f"setText('start')")
+        self.view.page().runJavaScript(f"toggleNotification()")
+
         for obj in db.get_bots():
             bot = TelegramBot(obj[2], obj[3])
             self.t_bots.append(bot)
@@ -81,3 +76,5 @@ class Uploader(QThread):
 
         for thread in threads:
             thread.join()
+
+        self.view.page().runJavaScript(f"toggleNotification()")
