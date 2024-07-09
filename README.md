@@ -44,7 +44,9 @@ Our user-friendly and intuitive interface makes it simple to upload and download
 
 Experience the freedom and flexibility of our cloud storage solution, designed to make your life easier and more efficient.
 
-You can also support me with a cup of coffee: [donate](https://www.donationalerts.com/r/vombit_donation)
+
+You can also support me with a cup of coffee: [donate](https://www.donationalerts.com/r/vombit_donation) <br>
+This way I can devote more time to the project.
 
 <!-- ## Getting Started
 
