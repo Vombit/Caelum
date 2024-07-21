@@ -287,7 +287,7 @@ form .form-row .input-data{
   border-radius: 0 10px 10px 0;
   /* background: #ff4754; */
   background-color: #6634db;
-  transition: width 2s ease;
+  transition: width 1s ease;
 }
 #context_menu {
   position: absolute;

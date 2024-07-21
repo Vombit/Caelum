@@ -75,9 +75,7 @@ window.add_filters = function(filters_array) {
       folders.removeChild(elements[i]);
     }
   }
-  filters_array.forEach((folder) => {
-    add_folder(folder);
-  });
+  filters_array.forEach((folder) => add_folder(folder));
 }
 
 const changeProgress = (progress) => {

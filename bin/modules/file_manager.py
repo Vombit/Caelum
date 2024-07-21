@@ -31,24 +31,23 @@ class FileManager:
 
         return os.path.abspath(path)
 
-    def get_file_hash(self, file_path: str) -> str:
-        """
-        Generate an MD5 hash for the given file.
-
-        Args:
-            file_path (str): The absolute path of the file.
-
-        Return: An MD5 hash string of the file content.
-        """
-        block_size = 1024 * 1024  # 1 megabyte
+    def get_file_hash(self, file_path: str):
+        block_size = 1024 * 1024
         hash_md5 = hashlib.md5()
+        hash_progress = 0
 
-        with open(file_path, "rb") as f:
-            block = f.read(block_size)
-            while block:
-                hash_md5.update(block)
+        def generator():
+            nonlocal hash_md5, hash_progress
+            with open(file_path, "rb") as f:
                 block = f.read(block_size)
-        return hash_md5.hexdigest()
+                while block:
+                    hash_md5.update(block)
+                    block = f.read(block_size)
+                    hash_progress += block_size
+                    yield hash_progress
+
+        return generator(), hash_md5
+
 
     def get_file_size(self, file_path: str) -> int:
         return os.path.getsize(file_path)
@@ -100,18 +99,23 @@ class FileManager:
 
                 yield self.hash_filename + "_" + str(i), data
 
-    def process_file(self, file_path: str) -> None:
+    def process_file(self, file_path: str):
         """
         Split the given file into chunks and save them.
 
         Args:
             file_path (str): The absolute path of the file to process.
         """
-        self.hash_filename = self.get_file_hash(file_path)
+        gen, hasher = self.get_file_hash(file_path)
+        list(gen)
+        self.hash_filename = hasher.hexdigest()
 
         for file_name, data in self.split_file(file_path):
             with open(self.split_chunks + "/" + file_name, "wb") as f:
                 f.write(data)
+
+            yield file_name.split('_')[1]
+
 
     def get_split_chunks(self, dir_chunks=None) -> list:
         """

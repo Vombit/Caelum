@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-
+import time
 
 class TelegramBot:
     """
@@ -58,7 +58,9 @@ class TelegramBot:
         }
         # data = {"chat_id": str(self.chat_id), "document": (open(file_path, "rb"))}
         response = requests.post(url, files=files, data=data, timeout=120)
-        for _ in range(10):
+        
+        # shit code
+        for _ in range(100):
             try:
                 if response.status_code == 200:
                     result = response.json()
@@ -69,6 +71,8 @@ class TelegramBot:
             except Exception as e:
                 print(response.status_code)
                 print(response.json())
+                # 
+                time.sleep(30)
 
             # response = requests.post(url, files=files, data=data, timeout=120, verify=False)
             response = requests.post(url, files=files, data=data, timeout=120)

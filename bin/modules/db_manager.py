@@ -26,7 +26,7 @@ class DBManager:
                         chunks (
                             id INTEGER PRIMARY KEY,
                             main_file TEXT,
-                            hash TEXT UNIQUE,
+                            hash TEXT,
                             chunk_index INTEGER,
                             file_id TEXT,
                             key TEXT
