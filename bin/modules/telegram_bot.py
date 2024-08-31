@@ -50,33 +50,32 @@ class TelegramBot:
         """
         url = self.base_url + "sendDocument"
 
-        files = {
-            "document": (os.path.basename(file_path), open(file_path, "rb")),
-        }
-        data = {
-            "chat_id": self.chat_id,
-        }
-        # data = {"chat_id": str(self.chat_id), "document": (open(file_path, "rb"))}
-        response = requests.post(url, files=files, data=data, timeout=120)
-        
-        # shit code
-        for _ in range(100):
-            try:
-                if response.status_code == 200:
-                    result = response.json()
-                    if result["ok"]:
-                        file_id = result["result"]["document"]["file_id"]
+        with open(file_path, "rb") as file:
+            files = {
+                "document": (os.path.basename(file_path), file),
+            }
+            data = {
+                "chat_id": self.chat_id,
+            }
+            # data = {"chat_id": str(self.chat_id), "document": (open(file_path, "rb"))}
 
-                        return file_id
-            except Exception as e:
-                print(response.status_code)
-                print(response.json())
-                # 
-                time.sleep(30)
+            max_retries = 10
+            retry_delay = 10
 
-            # response = requests.post(url, files=files, data=data, timeout=120, verify=False)
-            response = requests.post(url, files=files, data=data, timeout=120)
-        else:
+            for attempt in range(max_retries):
+                try:
+                    response = requests.post(url, files=files, data=data, timeout=120)
+
+                    if response.status_code == 200:
+                        result = response.json()
+                        if result["ok"]:
+                            return result["result"]["document"]["file_id"]
+                except requests.exceptions.RequestException as e:
+                    print(f"Attempt {attempt + 1} failed: {e}")
+
+                time.sleep(retry_delay)
+                retry_delay *= 1.5
+
             return ""
 
     def download_document(self, file_id: str) -> str:
