@@ -112,4 +112,3 @@ class Downloader(QThread):
                 print(f"Error saving chunk {chunk[3]}: {e}")
             finally:
                 lock.release()
-            # print(f"{chunk[3]}")
