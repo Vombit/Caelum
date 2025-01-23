@@ -51,9 +51,14 @@ class Downloader(QThread):
         for thread in threads:
             thread.join()
 
-        self.change_text_popup('merging chunks')
-        fm.merge_chunks(self.file_name, file_hash)
-        
+        all_chunks_present = all(os.path.isfile(f"{fm.loaded_chunks}/{chunk[1]}_{chunk[3]}") for chunk in chunks)
+        if all_chunks_present:
+            self.change_text_popup('merging chunks')
+            fm.merge_chunks(self.file_name, file_hash)
+        else:
+            print("Error: Not all chunks are downloaded or valid.")
+            self.change_text_popup('error during download')
+
         self.downloaded_chunks_counter = 0
         self.change_progress(0)
         self.view.page().runJavaScript("toggleNotification()")
@@ -69,27 +74,40 @@ class Downloader(QThread):
             path_chunk = f"{fm.loaded_chunks}/{chunk[1]}_{chunk[3]}"
 
             if os.path.isfile(path_chunk):
-                hash = fm.get_file_hash(path_chunk)
-                if chunk[1] == hash:
+                file_hash = fm.get_file_hash(path_chunk)
+                if chunk[1] == file_hash:
+                    self.downloaded_chunks_counter += 1
+                    progress = int((self.downloaded_chunks_counter / self.chunks_total) * 100)
+                    self.change_progress(progress)
                     continue
 
-            loaded_file = bot.download_document(chunk[4])
-            if not loaded_file:
-                for bot in bots:
-                    loaded_file = bot.download_document(chunk[4])
-                    if loaded_file:
-                        break
+            loaded_file = None
+            bot_index = bots.index(bot)
+            attempts = 0
+            
+            while not loaded_file and attempts < len(bots):
+                try:
+                    loaded_file = bots[bot_index].download_document(chunk[4])
+                except Exception as e:
+                    print(f"Error downloading chunk {chunk[3]} with bot {bot_index}: {e}")
+                
+                if not loaded_file:
+                    bot_index = (bot_index + 1) % len(bots)
+                    attempts += 1
 
-            # Save the chunk to a file and remove it when done
+            if not loaded_file:
+                print(f"Failed to download chunk {chunk[3]} after trying all bots.")
+                continue
+
             try:
                 lock.acquire(True)
                 with open(path_chunk, "wb") as new_file:
                     new_file.write(loaded_file)
-                
+
                 self.downloaded_chunks_counter += 1
                 progress = int((self.downloaded_chunks_counter / self.chunks_total) * 100)
                 self.change_progress(progress)
-            except Exception:
-                print(Exception)
+            except Exception as e:
+                print(f"Error saving chunk {chunk[3]}: {e}")
             finally:
                 lock.release()

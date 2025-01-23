@@ -78,7 +78,7 @@ class TelegramBot:
 
             return ""
 
-    def download_document(self, file_id: str) -> str:
+    def download_document(self, file_id: str) -> str | None:
         """
         Downloads a document (file) from Telegram API
         using bot token and file ID.
@@ -86,7 +86,7 @@ class TelegramBot:
         Args:
             file_id (str): The file ID of the document to be downloaded.
 
-        Return: Content of the downloaded document as bytes.
+        Return: Content of the downloaded document as bytes or None if failed.
         """
         url = self.base_url + f"getFile?file_id={file_id}"
 
@@ -101,6 +101,9 @@ class TelegramBot:
                 )
                 file = requests.get(url_file)
                 return file.content
+            elif response.status_code == 400:
+                return None
+
             response = requests.get(url)
         else:
-            return ""
+            return None
