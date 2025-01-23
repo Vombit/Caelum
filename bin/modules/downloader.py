@@ -74,12 +74,13 @@ class Downloader(QThread):
             path_chunk = f"{fm.loaded_chunks}/{chunk[1]}_{chunk[3]}"
 
             if os.path.isfile(path_chunk):
-                file_hash = fm.get_file_hash(path_chunk)
-                if chunk[1] == file_hash:
+                gen, hasher = fm.get_file_hash(path_chunk)
+                list(gen)
+                file_hash = hasher.hexdigest()
+                if chunk[2] == file_hash:
                     self.downloaded_chunks_counter += 1
-                    progress = int((self.downloaded_chunks_counter / self.chunks_total) * 100)
-                    self.change_progress(progress)
                     continue
+
 
             loaded_file = None
             bot_index = bots.index(bot)
@@ -111,3 +112,4 @@ class Downloader(QThread):
                 print(f"Error saving chunk {chunk[3]}: {e}")
             finally:
                 lock.release()
+            # print(f"{chunk[3]}")
