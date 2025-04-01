@@ -1,4 +1,4 @@
-![Downloads](https://img.shields.io/github/downloads/Vombit/Caelum/total) ![Contributors](https://img.shields.io/github/contributors/Vombit/Caelum?color=dark-green) ![Forks](https://img.shields.io/github/forks/Vombit/Caelum?style=social) ![Stargazers](https://img.shields.io/github/stars/Vombit/Caelum?style=social) ![Issues](https://img.shields.io/github/issues/Vombit/Caelum)
+![GitHub Release](https://img.shields.io/github/v/release/Vombit/Caelum) ![Downloads](https://img.shields.io/github/downloads/Vombit/Caelum/total) ![Contributors](https://img.shields.io/github/contributors/Vombit/Caelum?color=dark-green) ![Forks](https://img.shields.io/github/forks/Vombit/Caelum?style=social) ![Stargazers](https://img.shields.io/github/stars/Vombit/Caelum?style=social) ![Issues](https://img.shields.io/github/issues/Vombit/Caelum)
 
 <br/>
 <p align="center">
